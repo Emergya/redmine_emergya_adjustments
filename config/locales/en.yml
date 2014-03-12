@@ -1,0 +1,10 @@
+en:
+  activerecord:
+    errors:
+      models:
+        issue:
+          attributes:
+            due_date:
+              localized_error: "can't be blank when closing the issue"
+            start_date:
+              localized_error: "can't be blank"

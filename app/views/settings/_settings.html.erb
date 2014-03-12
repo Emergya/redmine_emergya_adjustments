@@ -1,0 +1,180 @@
+<fieldset>
+<div class="splitcontentleft">
+<fieldset>
+Tipos de peticiones afectadas:
+<%= select_tag 'settings[trackers]',
+  options_from_collection_for_select(Tracker.all, :id, :name,
+    (@settings['trackers'] || []).collect{|tracker| tracker.to_i}), :multiple => true %>
+</fieldset>
+<br>
+
+<fieldset>
+<% 
+  options = ['Bajo', 'Medio', 'Alto']
+  impact = ['Leve', 'Moderado', 'Importante']
+  probability = ['Baja', 'Media', 'Elevada']
+%>
+
+<legend>Niveles de exposicion</legend>
+  <table border="1">
+    <tbody>
+      <tr>
+        <td></td>
+        <th colspan="<%= probability.length+1 %>">Probabilidad</th>
+      </tr>
+      <tr>
+        <th rowspan="<%= impact.length+1 %>">Impacto</th>
+        <td></td>
+        <% probability.each do |pLevel| %>
+          <th><%= pLevel %></th>
+        <% end %>
+      </tr>
+      <% impact.each do |iLevel| %>
+      <tr>
+        <th><%= iLevel %></th>
+        <% probability.each do |pLevel| %>
+        <td>
+        <%= 
+          select("settings[expositionLevels]["+iLevel+"]", pLevel, options, :selected => ExpositionLevel.getExpositionLevelValue(iLevel,pLevel)) 
+        %>
+        </td>
+        <% end %>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+</fieldset>
+</div>
+
+<div class="splitcontentright">
+<fieldset>
+<legend>Trackers</legend>
+  <p>
+    <label>Riesgos</label>
+    <%= select_tag 'settings[risk_tracker]',
+        ('<option></option>' +
+          options_from_collection_for_select(Tracker.all, :id, :name, @settings['risk_tracker'].to_i)).html_safe %>
+  </p>
+
+  <p>
+    <label>Facturas</label>
+    <%= select_tag 'settings[bill_tracker]',
+        ('<option></option>' +
+          options_from_collection_for_select(Tracker.all, :id, :name, @settings['bill_tracker'].to_i)).html_safe %>
+  </p>
+</fieldset>
+
+<fieldset>
+<legend>Campos personalizados</legend>
+  <p>
+    <label>Impacto del riesgo</label>
+    <%
+      if Setting.plugin_redmine_emergya_adjustments['risk_tracker'].present? 
+        options = ('<option></option>'+options_from_collection_for_select(Tracker.find(Setting.plugin_redmine_emergya_adjustments['risk_tracker']).custom_fields, :id, :name, @settings['risk_impact_custom_field'].to_i)).html_safe
+      else
+        options = ('<option></option>').html_safe
+      end
+    %>
+    <%= select_tag 'settings[risk_impact_custom_field]', options %>
+    <!-- observe_field replacement for Redmine 2.3-->
+    <script>
+      $('#settings_risk_tracker').change(function(){
+      $('#settings_risk_impact_custom_field').load('/settings/show_tracker_custom_fields', {tracker: $('#settings_risk_tracker').val()});
+      });
+    </script>
+  </p>
+
+  <p>
+    <label>Probabilidad del riesgo</label>
+    <%
+      if Setting.plugin_redmine_emergya_adjustments['risk_tracker'].present? 
+        options = ('<option></option>'+options_from_collection_for_select(Tracker.find(Setting.plugin_redmine_emergya_adjustments['risk_tracker']).custom_fields, :id, :name, @settings['risk_probability_custom_field'].to_i)).html_safe
+      else
+        options = ('<option></option>').html_safe
+      end
+    %>
+    <%= select_tag 'settings[risk_probability_custom_field]', options %>
+    <!-- observe_field replacement for Redmine 2.3-->
+    <script>
+      $('#settings_risk_tracker').change(function(){
+      $('#settings_risk_probability_custom_field').load('/settings/show_tracker_custom_fields', {tracker: $('#settings_risk_tracker').val()});
+      });
+    </script>
+  </p>
+
+  <p>
+    <label>Nivel de exposición del riesgo</label>
+    <%
+      if Setting.plugin_redmine_emergya_adjustments['risk_tracker'].present? 
+        options = ('<option></option>'+options_from_collection_for_select(Tracker.find(Setting.plugin_redmine_emergya_adjustments['risk_tracker']).custom_fields, :id, :name, @settings['risk_exposition_level_custom_field'].to_i)).html_safe
+      else
+        options = ('<option></option>').html_safe
+      end
+    %>
+    <%= select_tag 'settings[risk_exposition_level_custom_field]', options %>
+    <!-- observe_field replacement for Redmine 2.3-->
+    <script>
+      $('#settings_risk_tracker').change(function(){
+      $('#settings_risk_exposition_level_custom_field').load('/settings/show_tracker_custom_fields', {tracker: $('#settings_risk_tracker').val()});
+      });
+    </script>
+  </p>
+
+  <p>
+    <label>Facturación de la factura</label>
+    <%
+      if Setting.plugin_redmine_emergya_adjustments['bill_tracker'].present? 
+        options = ('<option></option>'+options_from_collection_for_select(Tracker.find(Setting.plugin_redmine_emergya_adjustments['bill_tracker']).custom_fields, :id, :name, @settings['bill_invoice_custom_field'].to_i)).html_safe
+      else
+        options = ('<option></option>').html_safe
+      end
+    %>
+    <%= select_tag 'settings[bill_invoice_custom_field]', options %>
+    <!-- observe_field replacement for Redmine 2.3-->
+    <script>
+      $('#settings_bill_tracker').change(function(){
+      $('#settings_bill_invoice_custom_field').load('/settings/show_tracker_custom_fields', {tracker: $('#settings_bill_tracker').val()});
+      });
+    </script>
+  </p>
+
+  <p>
+    <label>Iva de la factura</label>
+    <%
+      if Setting.plugin_redmine_emergya_adjustments['bill_tracker'].present? 
+        options = ('<option></option>'+options_from_collection_for_select(Tracker.find(Setting.plugin_redmine_emergya_adjustments['bill_tracker']).custom_fields, :id, :name, @settings['bill_iva_custom_field'].to_i)).html_safe
+      else
+        options = ('<option></option>').html_safe
+      end
+    %>
+    <%= select_tag 'settings[bill_iva_custom_field]', options %>
+    <!-- observe_field replacement for Redmine 2.3-->
+    <script>
+      $('#settings_bill_tracker').change(function(){
+      $('#settings_bill_iva_custom_field').load('/settings/show_tracker_custom_fields', {tracker: $('#settings_bill_tracker').val()});
+      });
+    </script>
+  </p>
+
+  <p>
+    <label>Cobro de la factura</label>
+    <%
+      if Setting.plugin_redmine_emergya_adjustments['bill_tracker'].present? 
+        options = ('<option></option>'+options_from_collection_for_select(Tracker.find(Setting.plugin_redmine_emergya_adjustments['bill_tracker']).custom_fields, :id, :name, @settings['bill_amount_custom_field'].to_i)).html_safe
+      else
+        options = ('<option></option>').html_safe
+      end
+    %>
+    <%= select_tag 'settings[bill_amount_custom_field]', options %>
+    <!-- observe_field replacement for Redmine 2.3-->
+    <script>
+      $('#settings_bill_tracker').change(function(){
+      $('#settings_bill_amount_custom_field').load('/settings/show_tracker_custom_fields', {tracker: $('#settings_bill_tracker').val()});
+      });
+    </script>
+  </p>
+  
+</fieldset>
+</div>
+
+</fieldset>

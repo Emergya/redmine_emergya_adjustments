@@ -1,2 +1,2 @@
-redmine_emergya_adjustments
-===========================
+Emergya Adjustments
+===================

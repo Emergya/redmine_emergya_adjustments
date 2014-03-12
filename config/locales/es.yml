@@ -1,0 +1,11 @@
+
+es:
+  activerecord:
+    errors:
+      models:
+        issue:
+          attributes:
+            due_date:
+              localized_error: "no puede estar en blanco al cerrar la tarea"
+            start_date:
+              localized_error: "no puede estar en blanco"
