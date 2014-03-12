@@ -1,4 +1,4 @@
-== Redmine Emergya Issue Adjustment Plugin
+# Redmine Emergya Issue Adjustment Plugin
 
 Several issue/tracker behaviour changes to adjust to Emergya workflows:
 
@@ -12,24 +12,24 @@ Several issue/tracker behaviour changes to adjust to Emergya workflows:
 
 * Shows alphabetically ordered some Redmine filters list
 
-== Install
+## Install
 
 1. Follow Redmine {plugin installation instructions}[http://www.redmine.org/projects/redmine/wiki/Plugins#Installing-a-plugin].
 2. In _Administration_, _plugins_ you may *optionally* configure the plugin.
    You can select trackers to apply the plugin functionality 
 
-== Uninstall
+## Uninstall
 
 1. Follow Redmine {plugin uninstall instructions}[http://www.redmine.org/projects/redmine/wiki/Plugins#Uninstalling-a-plugin].
 
-== License
+## License
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
 Foundation; either version 2 of the License, or (at your option) any later
 version. See LICENSE.txt for details.
 
-== Contributing
+## Contributing
 
 Just fork the repository[https://github.com/Emergya/redmine_dates_required] and
 do a pull request. If you are going to do major change that you would like to
