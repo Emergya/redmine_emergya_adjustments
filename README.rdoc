@@ -1,4 +1,4 @@
-== Redmine Emergya Issue Adjustement Plugin
+== Redmine Emergya Issue Adjustment Plugin
 
 Several issue/tracker behaviour changes to adjust to Emergya workflows:
 
