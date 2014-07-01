@@ -25,7 +25,7 @@
     $("#issue_custom_field_values_"+"<%=Setting.plugin_redmine_emergya_adjustments['risk_probability_custom_field']%>").addClass('launcher attr2');
     $("#issue_custom_field_values_"+"<%=Setting.plugin_redmine_emergya_adjustments['risk_exposition_level_custom_field']%>").addClass('autofilled_field select_input');
 
-    url = "/projects/"+"<%=params[:project_id]%>"+"/issues/get_exposition_level";
+    url = "/get_exposition_level";
   </script>
 <% when Setting.plugin_redmine_emergya_adjustments['bill_tracker'].to_i %>
   <script type="text/javascript">
@@ -33,6 +33,6 @@
     $("#issue_custom_field_values_"+"<%=Setting.plugin_redmine_emergya_adjustments['bill_iva_custom_field']%>").addClass('launcher attr2');
     $("#issue_custom_field_values_"+"<%=Setting.plugin_redmine_emergya_adjustments['bill_amount_custom_field']%>").addClass('autofilled_field');
 
-    url = "/projects/"+"<%=params[:project_id]%>"+"/issues/get_bill_amount";
+    url = "/get_bill_amount";
   </script>
 <% end %>
