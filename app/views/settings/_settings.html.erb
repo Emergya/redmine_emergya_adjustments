@@ -1,6 +1,7 @@
 <fieldset>
 <div class="splitcontentleft">
 <fieldset>
+<legend>Fecha de inicio obligatoria</legend>
 Tipos de peticiones afectadas:
 <%= select_tag 'settings[trackers]',
   options_from_collection_for_select(Tracker.all, :id, :name,

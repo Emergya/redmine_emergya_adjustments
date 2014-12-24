@@ -25,14 +25,14 @@ module IssuesControllerPatch
     end
 
     def get_bill_amount
-      facturado = params[:attr1].to_f
-      iva = params[:attr2].to_f
+      facturado = params[:attr1]
+      iva = params[:attr2]
 
-      if facturado.present? && iva.present?
-        @cobrado = facturado * (1.0+(iva/100.0))
+      if facturado.present? and iva.present? and iva != 'Manual'
+        @cobrado = facturado.to_f * (1.0+(iva.to_f/100.0))
         render :text => @cobrado
       else 
-        render :nothing => true
+        render :text => '0' #:nothing => true
       end
     end
 

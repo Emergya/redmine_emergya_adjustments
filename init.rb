@@ -10,7 +10,8 @@
 #end
 
 #require 'redmine'
-require 'issues_dates_required_patch'
+#require 'issues_dates_required_patch'
+require 'issue_patch'
 require 'issues_controller_patch'
 require 'queries_helper_patch'
 require 'hooks'

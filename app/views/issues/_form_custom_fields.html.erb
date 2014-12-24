@@ -29,10 +29,30 @@
   </script>
 <% when Setting.plugin_redmine_emergya_adjustments['bill_tracker'].to_i %>
   <script type="text/javascript">
-    $("#issue_custom_field_values_"+"<%=Setting.plugin_redmine_emergya_adjustments['bill_invoice_custom_field']%>").addClass('launcher attr1');
-    $("#issue_custom_field_values_"+"<%=Setting.plugin_redmine_emergya_adjustments['bill_iva_custom_field']%>").addClass('launcher attr2');
-    $("#issue_custom_field_values_"+"<%=Setting.plugin_redmine_emergya_adjustments['bill_amount_custom_field']%>").addClass('autofilled_field');
+    facturacion = $("#issue_custom_field_values_"+"<%=Setting.plugin_redmine_emergya_adjustments['bill_invoice_custom_field']%>");
+    iva = $("#issue_custom_field_values_"+"<%=Setting.plugin_redmine_emergya_adjustments['bill_iva_custom_field']%>");
+    cobro = $("#issue_custom_field_values_"+"<%=Setting.plugin_redmine_emergya_adjustments['bill_amount_custom_field']%>");
+
+    // Auto calcular el campo cobro apartir de facturación e iva
+    facturacion.addClass('launcher attr1');
+    iva.addClass('launcher attr2');
+    cobro.addClass('autofilled_field');
 
     url = "/get_bill_amount";
+
+    // Deshabilitar campo cobro cuando iva no es manual
+    if (iva.val() != 'Manual'){
+      cobro.prop('disabled',true);
+    }
+
+    iva.live('change', function(){
+      if (this.value == 'Manual'){
+        cobro.prop('disabled', false);
+      } else {
+        cobro.prop('disabled', true);
+      }
+    });
+
+
   </script>
 <% end %>
