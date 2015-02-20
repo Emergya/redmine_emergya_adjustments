@@ -21,9 +21,13 @@
 <% case @issue.tracker_id %>
 <% when Setting.plugin_redmine_emergya_adjustments['risk_tracker'].to_i %>
   <script type="text/javascript">
-    $("#issue_custom_field_values_"+"<%=Setting.plugin_redmine_emergya_adjustments['risk_impact_custom_field']%>").addClass('launcher attr1');
-    $("#issue_custom_field_values_"+"<%=Setting.plugin_redmine_emergya_adjustments['risk_probability_custom_field']%>").addClass('launcher attr2');
-    $("#issue_custom_field_values_"+"<%=Setting.plugin_redmine_emergya_adjustments['risk_exposition_level_custom_field']%>").addClass('autofilled_field select_input');
+    impacto = $("#issue_custom_field_values_"+"<%=Setting.plugin_redmine_emergya_adjustments['risk_impact_custom_field']%>");
+    probabilidad = $("#issue_custom_field_values_"+"<%=Setting.plugin_redmine_emergya_adjustments['risk_probability_custom_field']%>");
+    exposicion = $("#issue_custom_field_values_"+"<%=Setting.plugin_redmine_emergya_adjustments['risk_exposition_level_custom_field']%>");
+
+    impacto.addClass('launcher').attr('data-attr_name','impacto');
+    probabilidad.addClass('launcher').attr('data-attr_name','probabilidad');
+    exposicion.addClass('autofilled_field select_input');
 
     url = "/get_exposition_level";
   </script>
@@ -34,8 +38,8 @@
     cobro = $("#issue_custom_field_values_"+"<%=Setting.plugin_redmine_emergya_adjustments['bill_amount_custom_field']%>");
 
     // Auto calcular el campo cobro apartir de facturación e iva
-    facturacion.addClass('launcher attr1');
-    iva.addClass('launcher attr2');
+    facturacion.addClass('launcher').attr('data-attr_name','facturado');
+    iva.addClass('launcher').attr('data-attr_name','iva');
     cobro.addClass('autofilled_field');
 
     url = "/get_bill_amount";
@@ -54,5 +58,20 @@
     });
 
 
+  </script>
+<% when Setting.plugin_redmine_emergya_adjustments['bpo_tracker'].to_i %>
+  <script type="text/javascript">
+    coste_anual = $("#issue_custom_field_values_"+"<%=Setting.plugin_redmine_emergya_adjustments['bpo_annual_cost_custom_field']%>");
+    fecha_inicio = $("#issue_start_date");
+    fecha_fin = $("#issue_due_date");
+    coste_total = $("#issue_custom_field_values_"+"<%=Setting.plugin_redmine_emergya_adjustments['bpo_total_cost_custom_field']%>");
+
+    // Auto calcular el campo Coste total de BPO apartir de Coste anual de BPO y de la fecha de inicio y de fin
+    coste_anual.addClass('launcher').attr('data-attr_name','anual');
+    fecha_inicio.addClass('launcher').attr('data-attr_name','inicio');
+    fecha_fin.addClass('launcher').attr('data-attr_name','fin');
+    coste_total.addClass('autofilled_field').prop('disabled', true);
+
+    url = "/get_bpo_total";
   </script>
 <% end %>

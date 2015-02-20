@@ -12,11 +12,14 @@ Several issue/tracker behaviour changes to adjust to Emergya workflows:
 
 * Shows alphabetically ordered some Redmine filters list
 
+* In Bill trackers, the total charge is automatically calculated according to invoice and VAT. Anyway, you can chose 'Manual' VAT to edit manually the total charge.
+
+* In BPO trackers, the total charge is automatically calculated according to annual cost and start and due dates.
+
 ## Install
 
 1. Follow Redmine {plugin installation instructions}[http://www.redmine.org/projects/redmine/wiki/Plugins#Installing-a-plugin].
 2. In _Administration_, _plugins_ you may *optionally* configure the plugin.
-   You can select trackers to apply the plugin functionality 
 
 ## Uninstall
 
@@ -29,8 +32,3 @@ the terms of the GNU General Public License as published by the Free Software
 Foundation; either version 2 of the License, or (at your option) any later
 version. See LICENSE.txt for details.
 
-## Contributing
-
-Just fork the repository[https://github.com/Emergya/redmine_dates_required] and
-do a pull request. If you are going to do major change that you would like to
-see accepted upstream you can contact me at ogonzalez@emergya.com before.

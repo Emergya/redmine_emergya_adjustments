@@ -22,6 +22,8 @@ module IssuePatch
       validate  :validate_required_dates
       after_save :update_cobro, :if => Proc.new { |issue| 
         issue.tracker_id == Setting.plugin_redmine_emergya_adjustments['bill_tracker'].to_i}
+      after_save :update_bpo_total, :if => Proc.new { |issue| 
+        issue.tracker_id == Setting.plugin_redmine_emergya_adjustments['bpo_tracker'].to_i}
     end
 
   end
@@ -32,7 +34,6 @@ module IssuePatch
     #unloadable
 
     def update_cobro
-      #Rails::logger.info "VA A ACTUALIZAR EL VALOR DE COBRO"
       facturacion = CustomValue.find_by_customized_id_and_custom_field_id(self.id,
         Setting.plugin_redmine_emergya_adjustments['bill_invoice_custom_field'])
 
@@ -46,6 +47,20 @@ module IssuePatch
           
           cobro.update_attribute('value', facturacion.value.to_f * (1.0 + (iva.value.to_f/100.0)))
         end
+      end
+    end
+
+    def update_bpo_total
+      coste_anual = CustomValue.find_by_customized_id_and_custom_field_id(self.id,
+        Setting.plugin_redmine_emergya_adjustments['bpo_annual_cost_custom_field'])
+
+      if coste_anual.present?
+        coste_total = CustomValue.find_by_customized_id_and_custom_field_id(self.id,
+            Setting.plugin_redmine_emergya_adjustments['bpo_total_cost_custom_field'])
+        anual = coste_anual.value.to_f
+        dias = (self.due_date.to_date - self.start_date.to_date).to_i
+        
+        coste_total.update_attribute('value', (anual*dias)/365)
       end
     end
 

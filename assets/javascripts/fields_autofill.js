@@ -7,7 +7,14 @@ $(document).ready(function(){
 	
 
 	$('.launcher').live('change', function(){
-		params = {attr1: $('.attr1').val(), attr2: $('.attr2').val()}
+		params = {};
+
+		$('.launcher').each(function(index,value){
+			//params += $(this).attr('data-attr_name')+"="+$(this).val()+"&";
+			params[$(this).attr('data-attr_name')] = $(this).val();
+		});
+		//params = encodeURI(params.substring(0, params.length-1));
+		
 		if ($('.autofilled_field').hasClass('select_input')){
 			default_options=new Array();
 			$('.autofilled_field option').each(function(){
@@ -16,7 +23,7 @@ $(document).ready(function(){
 				option.push(this.value);
 				default_options.push(option);
 			});
-			params.options = JSON.stringify(default_options);
+			params['options'] = JSON.stringify(default_options);
 		}
 		$.ajax({
 			url: url,
