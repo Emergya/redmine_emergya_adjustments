@@ -43,7 +43,7 @@ module IssuesControllerPatch
       fin = params[:fin]
 
       if anual.present? and inicio.present? and fin.present?
-        dias = (fin.to_date - inicio.to_date).to_i
+        dias = (fin.to_date - inicio.to_date).to_i + 1
         total = (anual.to_f * dias)/365
         render :text => total
       else

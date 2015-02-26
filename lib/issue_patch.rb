@@ -58,7 +58,7 @@ module IssuePatch
         coste_total = CustomValue.find_by_customized_id_and_custom_field_id(self.id,
             Setting.plugin_redmine_emergya_adjustments['bpo_total_cost_custom_field'])
         anual = coste_anual.value.to_f
-        dias = (self.due_date.to_date - self.start_date.to_date).to_i
+        dias = (self.due_date.to_date - self.start_date.to_date).to_i + 1
         
         coste_total.update_attribute('value', (anual*dias)/365)
       end
