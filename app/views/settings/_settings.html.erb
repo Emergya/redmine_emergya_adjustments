@@ -1,6 +1,145 @@
 <fieldset>
 <div class="splitcontentleft">
 <fieldset>
+<legend>Trackers</legend>
+  <p>
+    <label>Riesgos</label>
+    <%= select_tag 'settings[risk_tracker]',
+        ('<option></option>' +
+          options_from_collection_for_select(Tracker.all, :id, :name, @settings['risk_tracker'].to_i)).html_safe %>
+  </p>
+
+  <p>
+    <label>Facturas</label>
+    <%= select_tag 'settings[bill_tracker]',
+        ('<option></option>' +
+          options_from_collection_for_select(Tracker.all, :id, :name, @settings['bill_tracker'].to_i)).html_safe %>
+  </p>
+
+  <p>
+    <label>Proveedores</label>
+    <%= select_tag 'settings[provider_tracker]',
+        ('<option></option>' +
+          options_from_collection_for_select(Tracker.all, :id, :name, @settings['provider_tracker'].to_i)).html_safe %>
+  </p>
+
+  <p>
+    <label>BPO</label>
+    <%= select_tag 'settings[bpo_tracker]',
+        ('<option></option>' +
+          options_from_collection_for_select(Tracker.all, :id, :name, @settings['bpo_tracker'].to_i)).html_safe %>
+  </p>
+</fieldset>
+
+<fieldset>
+<legend>Campos personalizados</legend>
+  <p>
+    <label>Impacto del riesgo</label>
+    <%
+      if Setting.plugin_redmine_emergya_adjustments['risk_tracker'].present? 
+        options = ('<option></option>'+options_from_collection_for_select(Tracker.find(Setting.plugin_redmine_emergya_adjustments['risk_tracker']).custom_fields, :id, :name, @settings['risk_impact_custom_field'].to_i)).html_safe
+      else
+        options = ('<option></option>').html_safe
+      end
+    %>
+    <%= select_tag 'settings[risk_impact_custom_field]', options %>
+    <%= settings_observe_field('risk_tracker', 'settings_risk_impact_custom_field') %>
+  </p>
+
+  <p>
+    <label>Probabilidad del riesgo</label>
+    <%
+      if Setting.plugin_redmine_emergya_adjustments['risk_tracker'].present? 
+        options = ('<option></option>'+options_from_collection_for_select(Tracker.find(Setting.plugin_redmine_emergya_adjustments['risk_tracker']).custom_fields, :id, :name, @settings['risk_probability_custom_field'].to_i)).html_safe
+      else
+        options = ('<option></option>').html_safe
+      end
+    %>
+    <%= select_tag 'settings[risk_probability_custom_field]', options %>
+    <%= settings_observe_field('risk_tracker', 'risk_probability_custom_field') %>
+  </p>
+
+  <p>
+    <label>Nivel de exposición del riesgo</label>
+    <%
+      if Setting.plugin_redmine_emergya_adjustments['risk_tracker'].present? 
+        options = ('<option></option>'+options_from_collection_for_select(Tracker.find(Setting.plugin_redmine_emergya_adjustments['risk_tracker']).custom_fields, :id, :name, @settings['risk_exposition_level_custom_field'].to_i)).html_safe
+      else
+        options = ('<option></option>').html_safe
+      end
+    %>
+    <%= select_tag 'settings[risk_exposition_level_custom_field]', options %>
+    <%= settings_observe_field('risk_tracker', 'risk_exposition_level_custom_field') %>
+  </p>
+
+  <p>
+    <label>Facturación de la factura</label>
+    <%
+      if Setting.plugin_redmine_emergya_adjustments['bill_tracker'].present? 
+        options = ('<option></option>'+options_from_collection_for_select(Tracker.find(Setting.plugin_redmine_emergya_adjustments['bill_tracker']).custom_fields, :id, :name, @settings['bill_invoice_custom_field'].to_i)).html_safe
+      else
+        options = ('<option></option>').html_safe
+      end
+    %>
+    <%= select_tag 'settings[bill_invoice_custom_field]', options %>
+    <%= settings_observe_field('bill_tracker', 'bill_invoice_custom_field') %>
+  </p>
+
+  <p>
+    <label>Iva de la factura</label>
+    <%
+      if Setting.plugin_redmine_emergya_adjustments['bill_tracker'].present? 
+        options = ('<option></option>'+options_from_collection_for_select(Tracker.find(Setting.plugin_redmine_emergya_adjustments['bill_tracker']).custom_fields, :id, :name, @settings['bill_iva_custom_field'].to_i)).html_safe
+      else
+        options = ('<option></option>').html_safe
+      end
+    %>
+    <%= select_tag 'settings[bill_iva_custom_field]', options %>
+    <%= settings_observe_field('bill_tracker', 'bill_iva_custom_field') %>
+  </p>
+
+  <p>
+    <label>Cobro de la factura</label>
+    <%
+      if Setting.plugin_redmine_emergya_adjustments['bill_tracker'].present? 
+        options = ('<option></option>'+options_from_collection_for_select(Tracker.find(Setting.plugin_redmine_emergya_adjustments['bill_tracker']).custom_fields, :id, :name, @settings['bill_amount_custom_field'].to_i)).html_safe
+      else
+        options = ('<option></option>').html_safe
+      end
+    %>
+    <%= select_tag 'settings[bill_amount_custom_field]', options %>
+    <%= settings_observe_field('bill_tracker', 'bill_amount_custom_field') %>
+  </p>
+
+  <p>
+    <label>Coste anual BPO</label>
+    <%
+      if Setting.plugin_redmine_emergya_adjustments['bpo_tracker'].present? 
+        options = ('<option></option>'+options_from_collection_for_select(Tracker.find(Setting.plugin_redmine_emergya_adjustments['bpo_tracker']).custom_fields, :id, :name, @settings['bpo_annual_cost_custom_field'].to_i)).html_safe
+      else
+        options = ('<option></option>').html_safe
+      end
+    %>
+    <%= select_tag 'settings[bpo_annual_cost_custom_field]', options %>
+    <%= settings_observe_field('bpo_tracker', 'bpo_annual_cost_custom_field') %>
+  </p>
+
+  <p>
+    <label>Coste total BPO</label>
+    <%
+      if Setting.plugin_redmine_emergya_adjustments['bpo_tracker'].present? 
+        options = ('<option></option>'+options_from_collection_for_select(Tracker.find(Setting.plugin_redmine_emergya_adjustments['bpo_tracker']).custom_fields, :id, :name, @settings['bpo_total_cost_custom_field'].to_i)).html_safe
+      else
+        options = ('<option></option>').html_safe
+      end
+    %>
+    <%= select_tag 'settings[bpo_total_cost_custom_field]', options %>
+    <%= settings_observe_field('bpo_tracker', 'bpo_total_cost_custom_field') %>
+  </p>
+  
+</fieldset>
+
+<fieldset>
 <legend>Fecha de inicio obligatoria</legend>
 Tipos de peticiones afectadas:
 <%= select_tag 'settings[trackers]',
@@ -8,6 +147,9 @@ Tipos de peticiones afectadas:
     (@settings['trackers'] || []).collect{|tracker| tracker.to_i}), :multiple => true %>
 </fieldset>
 <br>
+</div>
+
+<div class="splitcontentright">
 
 <fieldset>
 <% 
@@ -45,179 +187,120 @@ Tipos de peticiones afectadas:
     </tbody>
   </table>
 </fieldset>
-</div>
-
-<div class="splitcontentright">
-<fieldset>
-<legend>Trackers</legend>
-  <p>
-    <label>Riesgos</label>
-    <%= select_tag 'settings[risk_tracker]',
-        ('<option></option>' +
-          options_from_collection_for_select(Tracker.all, :id, :name, @settings['risk_tracker'].to_i)).html_safe %>
-  </p>
-
-  <p>
-    <label>Facturas</label>
-    <%= select_tag 'settings[bill_tracker]',
-        ('<option></option>' +
-          options_from_collection_for_select(Tracker.all, :id, :name, @settings['bill_tracker'].to_i)).html_safe %>
-  </p>
-
-  <p>
-    <label>BPO</label>
-    <%= select_tag 'settings[bpo_tracker]',
-        ('<option></option>' +
-          options_from_collection_for_select(Tracker.all, :id, :name, @settings['bpo_tracker'].to_i)).html_safe %>
-  </p>
-</fieldset>
 
 <fieldset>
-<legend>Campos personalizados</legend>
+  <legend><%= check_box_tag 'settings[plugin_currency_manager]', true, @settings['plugin_currency_manager'].present? %> Plugin Currency Manager </legend>
   <p>
-    <label>Impacto del riesgo</label>
-    <%
-      if Setting.plugin_redmine_emergya_adjustments['risk_tracker'].present? 
-        options = ('<option></option>'+options_from_collection_for_select(Tracker.find(Setting.plugin_redmine_emergya_adjustments['risk_tracker']).custom_fields, :id, :name, @settings['risk_impact_custom_field'].to_i)).html_safe
-      else
-        options = ('<option></option>').html_safe
-      end
-    %>
-    <%= select_tag 'settings[risk_impact_custom_field]', options %>
-    <!-- observe_field replacement for Redmine 2.3-->
-    <script>
-      $('#settings_risk_tracker').change(function(){
-      $('#settings_risk_impact_custom_field').load('/settings/show_tracker_custom_fields', {tracker: $('#settings_risk_tracker').val()});
-      });
-    </script>
+    <label>Tipo de Moneda</label>
+      <%= select_tag 'settings[currency_custom_field]',
+      ('<option></option>' +
+        options_from_collection_for_select(CustomField.all, :id, :name, @settings['currency_custom_field'].to_i)).html_safe %>
   </p>
-
-  <p>
-    <label>Probabilidad del riesgo</label>
-    <%
-      if Setting.plugin_redmine_emergya_adjustments['risk_tracker'].present? 
-        options = ('<option></option>'+options_from_collection_for_select(Tracker.find(Setting.plugin_redmine_emergya_adjustments['risk_tracker']).custom_fields, :id, :name, @settings['risk_probability_custom_field'].to_i)).html_safe
-      else
-        options = ('<option></option>').html_safe
-      end
-    %>
-    <%= select_tag 'settings[risk_probability_custom_field]', options %>
-    <!-- observe_field replacement for Redmine 2.3-->
-    <script>
-      $('#settings_risk_tracker').change(function(){
-      $('#settings_risk_probability_custom_field').load('/settings/show_tracker_custom_fields', {tracker: $('#settings_risk_tracker').val()});
-      });
-    </script>
-  </p>
-
-  <p>
-    <label>Nivel de exposición del riesgo</label>
-    <%
-      if Setting.plugin_redmine_emergya_adjustments['risk_tracker'].present? 
-        options = ('<option></option>'+options_from_collection_for_select(Tracker.find(Setting.plugin_redmine_emergya_adjustments['risk_tracker']).custom_fields, :id, :name, @settings['risk_exposition_level_custom_field'].to_i)).html_safe
-      else
-        options = ('<option></option>').html_safe
-      end
-    %>
-    <%= select_tag 'settings[risk_exposition_level_custom_field]', options %>
-    <!-- observe_field replacement for Redmine 2.3-->
-    <script>
-      $('#settings_risk_tracker').change(function(){
-      $('#settings_risk_exposition_level_custom_field').load('/settings/show_tracker_custom_fields', {tracker: $('#settings_risk_tracker').val()});
-      });
-    </script>
-  </p>
-
-  <p>
-    <label>Facturación de la factura</label>
-    <%
-      if Setting.plugin_redmine_emergya_adjustments['bill_tracker'].present? 
-        options = ('<option></option>'+options_from_collection_for_select(Tracker.find(Setting.plugin_redmine_emergya_adjustments['bill_tracker']).custom_fields, :id, :name, @settings['bill_invoice_custom_field'].to_i)).html_safe
-      else
-        options = ('<option></option>').html_safe
-      end
-    %>
-    <%= select_tag 'settings[bill_invoice_custom_field]', options %>
-    <!-- observe_field replacement for Redmine 2.3-->
-    <script>
-      $('#settings_bill_tracker').change(function(){
-      $('#settings_bill_invoice_custom_field').load('/settings/show_tracker_custom_fields', {tracker: $('#settings_bill_tracker').val()});
-      });
-    </script>
-  </p>
-
-  <p>
-    <label>Iva de la factura</label>
-    <%
-      if Setting.plugin_redmine_emergya_adjustments['bill_tracker'].present? 
-        options = ('<option></option>'+options_from_collection_for_select(Tracker.find(Setting.plugin_redmine_emergya_adjustments['bill_tracker']).custom_fields, :id, :name, @settings['bill_iva_custom_field'].to_i)).html_safe
-      else
-        options = ('<option></option>').html_safe
-      end
-    %>
-    <%= select_tag 'settings[bill_iva_custom_field]', options %>
-    <!-- observe_field replacement for Redmine 2.3-->
-    <script>
-      $('#settings_bill_tracker').change(function(){
-      $('#settings_bill_iva_custom_field').load('/settings/show_tracker_custom_fields', {tracker: $('#settings_bill_tracker').val()});
-      });
-    </script>
-  </p>
-
-  <p>
-    <label>Cobro de la factura</label>
-    <%
-      if Setting.plugin_redmine_emergya_adjustments['bill_tracker'].present? 
-        options = ('<option></option>'+options_from_collection_for_select(Tracker.find(Setting.plugin_redmine_emergya_adjustments['bill_tracker']).custom_fields, :id, :name, @settings['bill_amount_custom_field'].to_i)).html_safe
-      else
-        options = ('<option></option>').html_safe
-      end
-    %>
-    <%= select_tag 'settings[bill_amount_custom_field]', options %>
-    <!-- observe_field replacement for Redmine 2.3-->
-    <script>
-      $('#settings_bill_tracker').change(function(){
-      $('#settings_bill_amount_custom_field').load('/settings/show_tracker_custom_fields', {tracker: $('#settings_bill_tracker').val()});
-      });
-    </script>
-  </p>
-
-  <p>
-    <label>Coste anual BPO</label>
-    <%
-      if Setting.plugin_redmine_emergya_adjustments['bpo_tracker'].present? 
-        options = ('<option></option>'+options_from_collection_for_select(Tracker.find(Setting.plugin_redmine_emergya_adjustments['bpo_tracker']).custom_fields, :id, :name, @settings['bpo_annual_cost_custom_field'].to_i)).html_safe
-      else
-        options = ('<option></option>').html_safe
-      end
-    %>
-    <%= select_tag 'settings[bpo_annual_cost_custom_field]', options %>
-    <!-- observe_field replacement for Redmine 2.3-->
-    <script>
-      $('#settings_bpo_tracker').change(function(){
-      $('#settings_bpo_annual_cost_custom_field').load('/settings/show_tracker_custom_fields', {tracker: $('#settings_bpo_tracker').val()});
-      });
-    </script>
-  </p>
-
-  <p>
-    <label>Coste total BPO</label>
-    <%
-      if Setting.plugin_redmine_emergya_adjustments['bpo_tracker'].present? 
-        options = ('<option></option>'+options_from_collection_for_select(Tracker.find(Setting.plugin_redmine_emergya_adjustments['bpo_tracker']).custom_fields, :id, :name, @settings['bpo_total_cost_custom_field'].to_i)).html_safe
-      else
-        options = ('<option></option>').html_safe
-      end
-    %>
-    <%= select_tag 'settings[bpo_total_cost_custom_field]', options %>
-    <!-- observe_field replacement for Redmine 2.3-->
-    <script>
-      $('#settings_bpo_tracker').change(function(){
-      $('#settings_bpo_total_cost_custom_field').load('/settings/show_tracker_custom_fields', {tracker: $('#settings_bpo_tracker').val()});
-      });
-    </script>
-  </p>
-  
+  <fieldset>
+    <legend>Facturas</legend>
+    <p>
+      <label>Campo original</label>
+      <%
+        if Setting.plugin_redmine_emergya_adjustments['bill_tracker'].present? 
+          options = ('<option></option>'+options_from_collection_for_select(Tracker.find(Setting.plugin_redmine_emergya_adjustments['bill_tracker']).custom_fields, :id, :name, @settings['currency_bill_custom_field_orig'].to_i)).html_safe
+        else
+          options = ('<option></option>').html_safe
+        end
+      %>
+      <%= select_tag 'settings[currency_bill_custom_field_orig]', options %>
+      <%= settings_observe_field('bill_tracker', 'currency_bill_custom_field_orig') %>
+    </p>
+    <p>
+      <label>Campo conversión</label>
+      <%
+        if Setting.plugin_redmine_emergya_adjustments['bill_tracker'].present? 
+          options = ('<option></option>'+options_from_collection_for_select(Tracker.find(Setting.plugin_redmine_emergya_adjustments['bill_tracker']).custom_fields, :id, :name, @settings['currency_bill_custom_field_conv'].to_i)).html_safe
+        else
+          options = ('<option></option>').html_safe
+        end
+      %>
+      <%= select_tag 'settings[currency_bill_custom_field_conv]', options %>
+      <%= settings_observe_field('bill_tracker', 'currency_bill_custom_field_conv') %>
+    </p>
+    <p>
+      <label>Fecha de facturación</label>
+      <%
+        if Setting.plugin_redmine_emergya_adjustments['bill_tracker'].present? 
+          options = ('<option></option>'+options_from_collection_for_select(Tracker.find(Setting.plugin_redmine_emergya_adjustments['bill_tracker']).custom_fields, :id, :name, @settings['currency_bill_custom_field_date'].to_i)).html_safe
+        else
+          options = ('<option></option>').html_safe
+        end
+      %>
+      <%= select_tag 'settings[currency_bill_custom_field_date]', options %>
+      <%= settings_observe_field('bill_tracker', 'currency_bill_custom_field_date') %>
+    </p>
+  </fieldset>
+  <fieldset>
+    <legend>Proveedores</legend>
+    <p>
+      <label>Campo original</label>
+      <%
+        if Setting.plugin_redmine_emergya_adjustments['provider_tracker'].present? 
+          options = ('<option></option>'+options_from_collection_for_select(Tracker.find(Setting.plugin_redmine_emergya_adjustments['provider_tracker']).custom_fields, :id, :name, @settings['currency_provider_custom_field_orig'].to_i)).html_safe
+        else
+          options = ('<option></option>').html_safe
+        end
+      %>
+      <%= select_tag 'settings[currency_provider_custom_field_orig]', options %>
+      <%= settings_observe_field('provider_tracker', 'currency_provider_custom_field_orig') %>
+    </p>
+    <p>
+      <label>Campo conversión</label>
+      <%
+        if Setting.plugin_redmine_emergya_adjustments['provider_tracker'].present? 
+          options = ('<option></option>'+options_from_collection_for_select(Tracker.find(Setting.plugin_redmine_emergya_adjustments['provider_tracker']).custom_fields, :id, :name, @settings['currency_provider_custom_field_conv'].to_i)).html_safe
+        else
+          options = ('<option></option>').html_safe
+        end
+      %>
+      <%= select_tag 'settings[currency_provider_custom_field_conv]', options %>
+      <%= settings_observe_field('provider_tracker', 'currency_provider_custom_field_conv') %>
+    </p>
+    <p>
+      <label>Fecha de facturación</label>
+      <%
+        if Setting.plugin_redmine_emergya_adjustments['provider_tracker'].present? 
+          options = ('<option></option>'+options_from_collection_for_select(Tracker.find(Setting.plugin_redmine_emergya_adjustments['provider_tracker']).custom_fields, :id, :name, @settings['currency_provider_custom_field_date'].to_i)).html_safe
+        else
+          options = ('<option></option>').html_safe
+        end
+      %>
+      <%= select_tag 'settings[currency_provider_custom_field_date]', options %>
+      <%= settings_observe_field('provider_tracker', 'currency_provider_custom_field_date') %>
+    </p>
+  </fieldset>
+  <fieldset>
+    <legend>BPO</legend>
+    <p>
+      <label>Campo original</label>
+      <%
+        if Setting.plugin_redmine_emergya_adjustments['bpo_tracker'].present? 
+          options = ('<option></option>'+options_from_collection_for_select(Tracker.find(Setting.plugin_redmine_emergya_adjustments['bpo_tracker']).custom_fields, :id, :name, @settings['currency_bpo_custom_field_orig'].to_i)).html_safe
+        else
+          options = ('<option></option>').html_safe
+        end
+      %>
+      <%= select_tag 'settings[currency_bpo_custom_field_orig]', options %>
+      <%= settings_observe_field('bpo_tracker', 'currency_bpo_custom_field_orig') %>
+    </p>
+    <p>
+      <label>Campo conversión</label>
+      <%
+        if Setting.plugin_redmine_emergya_adjustments['bpo_tracker'].present? 
+          options = ('<option></option>'+options_from_collection_for_select(Tracker.find(Setting.plugin_redmine_emergya_adjustments['bpo_tracker']).custom_fields, :id, :name, @settings['currency_bpo_custom_field_conv'].to_i)).html_safe
+        else
+          options = ('<option></option>').html_safe
+        end
+      %>
+      <%= select_tag 'settings[currency_bpo_custom_field_conv]', options %>
+      <%= settings_observe_field('bpo_tracker', 'currency_bpo_custom_field_conv') %>
+    </p>
+  </fieldset>
 </fieldset>
 </div>
 

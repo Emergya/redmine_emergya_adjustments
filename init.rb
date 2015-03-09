@@ -14,12 +14,16 @@
 require 'issue_patch'
 require 'issues_controller_patch'
 require 'queries_helper_patch'
+require 'issues_helper_patch'
+require 'settings_helper_patch'
 require 'hooks'
 
 
 Rails.configuration.to_prepare do
   TimelogController.send(:helper, :queries)
 #  IssuesController.send(:helper, :queries)
+  IssuesController.send(:helper, :issues)
+  SettingsController.send(:helper, :settings)
 end
 
 Redmine::Plugin.register :redmine_emergya_adjustments do

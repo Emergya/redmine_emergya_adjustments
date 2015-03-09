@@ -17,63 +17,65 @@
 </div>
 
 
+<script>
+// Rutas a las acciones de "issues_controller" para los procesamientos de autocompletado
+url = []
+url['risk'] = "/get_exposition_level";
+url['bill_cost'] = "/get_bill_amount";
+url['currency_exchange'] = "/get_currency_exchange";
+url['currency_exchange_bpo'] = "/get_currency_exchange_bpo";
+url['bpo_total_cost'] = "/get_bpo_total";
+</script>
 
 <% case @issue.tracker_id %>
 <% when Setting.plugin_redmine_emergya_adjustments['risk_tracker'].to_i %>
-  <script type="text/javascript">
-    impacto = $("#issue_custom_field_values_"+"<%=Setting.plugin_redmine_emergya_adjustments['risk_impact_custom_field']%>");
-    probabilidad = $("#issue_custom_field_values_"+"<%=Setting.plugin_redmine_emergya_adjustments['risk_probability_custom_field']%>");
-    exposicion = $("#issue_custom_field_values_"+"<%=Setting.plugin_redmine_emergya_adjustments['risk_exposition_level_custom_field']%>");
-
-    impacto.addClass('launcher').attr('data-attr_name','impacto');
-    probabilidad.addClass('launcher').attr('data-attr_name','probabilidad');
-    exposicion.addClass('autofilled_field select_input');
-
-    url = "/get_exposition_level";
-  </script>
+  <%= set_launcher('impacto', 'risk_impact_custom_field', 'risk') %>
+  <%= set_launcher('probabilidad', 'risk_probability_custom_field', 'risk') %>
+  <%= set_autofilled('risk_exposition_level_custom_field', 'risk', {:class => 'select_input'}) %>
+  
 <% when Setting.plugin_redmine_emergya_adjustments['bill_tracker'].to_i %>
-  <script type="text/javascript">
-    facturacion = $("#issue_custom_field_values_"+"<%=Setting.plugin_redmine_emergya_adjustments['bill_invoice_custom_field']%>");
-    iva = $("#issue_custom_field_values_"+"<%=Setting.plugin_redmine_emergya_adjustments['bill_iva_custom_field']%>");
-    cobro = $("#issue_custom_field_values_"+"<%=Setting.plugin_redmine_emergya_adjustments['bill_amount_custom_field']%>");
+  <%= set_launcher('facturado', 'bill_invoice_custom_field', 'bill_cost') %>
+  <%= set_launcher('iva', 'bill_iva_custom_field', 'bill_cost') %>
+  <%= set_autofilled('bill_amount_custom_field', 'bill_cost', {:disabled => true}) %>
+  
+  <%= set_toggling('enable', 'bill_amount_custom_field', 'bill_iva_custom_field', 'Manual') %>
 
-    // Auto calcular el campo cobro apartir de facturación e iva
-    facturacion.addClass('launcher').attr('data-attr_name','facturado');
-    iva.addClass('launcher').attr('data-attr_name','iva');
-    cobro.addClass('autofilled_field');
+  <% if Setting.plugin_redmine_emergya_adjustments['plugin_currency_manager'].present? %>
+    <%= set_launcher('moneda', 'currency_custom_field', 'currency_exchange bill_cost') %>
+    <%= set_launcher('original', 'currency_bill_custom_field_orig', 'currency_exchange bill_cost') %>
+    <%= set_launcher('fin', 'currency_bill_custom_field_date', 'currency_exchange bill_cost') %>
+    <%= set_autofilled('currency_bill_custom_field_conv', 'currency_exchange') %>
 
-    url = "/get_bill_amount";
+    <%= set_toggling('enable', 'currency_bill_custom_field_conv', 'currency_custom_field', 'EUR') %>
+    <%= set_toggling('disable', 'currency_bill_custom_field_orig', 'currency_custom_field', 'EUR') %>
+  <% end %>
+<% when Setting.plugin_redmine_emergya_adjustments['provider_tracker'].to_i %>
+  <% if Setting.plugin_redmine_emergya_adjustments['plugin_currency_manager'].present? %>
+    <%= set_launcher('moneda', 'currency_custom_field', 'currency_exchange') %>
+    <%= set_launcher('original', 'currency_provider_custom_field_orig', 'currency_exchange') %>
+    <%= set_launcher('fin', 'currency_provider_custom_field_date', 'currency_exchange') %>
+    <%= set_autofilled('currency_provider_custom_field_conv', 'currency_exchange') %>
 
-    // Deshabilitar campo cobro cuando iva no es manual
-    if (iva.val() != 'Manual'){
-      cobro.prop('disabled',true);
-    }
-
-    iva.live('change', function(){
-      if (this.value == 'Manual'){
-        cobro.prop('disabled', false);
-      } else {
-        cobro.prop('disabled', true);
-      }
-    });
-
-
-  </script>
+    <%= set_toggling('enable', 'currency_provider_custom_field_conv', 'currency_custom_field', 'EUR') %>
+    <%= set_toggling('disable', 'currency_provider_custom_field_orig', 'currency_custom_field', 'EUR') %>
+  <% end %>
 <% when Setting.plugin_redmine_emergya_adjustments['bpo_tracker'].to_i %>
+  <%= set_launcher('anual', 'bpo_annual_cost_custom_field', 'bpo_total_cost') %>
+  <%= set_launcher('inicio', '#issue_start_date', 'bpo_total_cost') %>
+  <%= set_launcher('fin', '#issue_due_date', 'bpo_total_cost') %>
+  <%= set_autofilled('bpo_total_cost_custom_field', 'bpo_total_cost', {:disabled => true}) %>
+
   <script type="text/javascript">
-    coste_anual = $("#issue_custom_field_values_"+"<%=Setting.plugin_redmine_emergya_adjustments['bpo_annual_cost_custom_field']%>");
-    fecha_inicio = $("#issue_start_date");
-    fecha_fin = $("#issue_due_date");
-    coste_total = $("#issue_custom_field_values_"+"<%=Setting.plugin_redmine_emergya_adjustments['bpo_total_cost_custom_field']%>");
-
-    // Auto calcular el campo Coste total de BPO apartir de Coste anual de BPO y de la fecha de inicio y de fin
-    coste_anual.addClass('launcher').attr('data-attr_name','anual');
-    fecha_inicio.addClass('launcher').attr('data-attr_name','inicio');
-    fecha_fin.addClass('launcher').attr('data-attr_name','fin');
-    coste_total.addClass('autofilled_field').prop('disabled', true);
-
-    url = "/get_bpo_total";
-
-    autofill_field();
+    autofill_field(['bpo_total_cost']);
   </script>
+  <% if Setting.plugin_redmine_emergya_adjustments['plugin_currency_manager'].present? %>
+    <%= set_launcher('moneda', 'currency_custom_field', 'currency_exchange bpo_total_cost') %>
+    <%= set_launcher('original', 'currency_bpo_custom_field_orig', 'currency_exchange bpo_total_cost') %>
+    <%= set_launcher('inicio', '#issue_start_date', 'currency_exchange_bpo bpo_total_cost') %>
+    <%= set_launcher('fin', '#issue_due_date', 'currency_exchange bpo_total_cost') %>
+    <%= set_autofilled('currency_bpo_custom_field_conv', 'currency_exchange') %>
+
+    <%= set_toggling('enable', 'currency_bpo_custom_field_conv', 'currency_custom_field', 'EUR') %>
+    <%= set_toggling('disable', 'currency_bpo_custom_field_orig', 'currency_custom_field', 'EUR') %>
+  <% end %>
 <% end %>

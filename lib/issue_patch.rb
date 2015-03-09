@@ -64,6 +64,20 @@ module IssuePatch
       end
     end
 
+    def update_currency_exchange
+      coste_anual = CustomValue.find_by_customized_id_and_custom_field_id(self.id,
+        Setting.plugin_redmine_emergya_adjustments['bpo_annual_cost_custom_field'])
+
+      if coste_anual.present?
+        coste_total = CustomValue.find_by_customized_id_and_custom_field_id(self.id,
+            Setting.plugin_redmine_emergya_adjustments['bpo_total_cost_custom_field'])
+        anual = coste_anual.value.to_f
+        dias = (self.due_date.to_date - self.start_date.to_date).to_i + 1
+        
+        coste_total.update_attribute('value', (anual*dias)/365)
+      end
+    end
+
     def validate_required_dates
       trackers = Setting.plugin_redmine_emergya_adjustments['trackers']
       if (trackers!=nil && (trackers.collect{|tracker| tracker.to_i}.include? tracker_id))

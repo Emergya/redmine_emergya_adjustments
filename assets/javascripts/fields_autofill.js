@@ -7,13 +7,13 @@ $(document).ready(function(){
 	
 
 	$('.launcher').live('change', function(){
-		autofill_field();
+		autofill_field($(this).attr('data-launcher_type').split(" "));
 	});
 
 });
 
 
-function autofill_field(){
+function autofill_field(tipos){
 	params = {};
 
 	$('.launcher').each(function(index,value){
@@ -32,15 +32,36 @@ function autofill_field(){
 		});
 		params['options'] = JSON.stringify(default_options);
 	}
+	//console.log(tipos);
+	send_query(tipos);	
+	//$.each(tipos.split(" "), function(i,tipo){
+	//});
+}
+
+function send_query(tipos){
+	tipo = tipos.shift();
 	$.ajax({
-		url: url,
+		url: url[tipo],
 		data: params,
 		success: function(data){
-			if ($('.autofilled_field').is('input')){
-				$('.autofilled_field').val(data);
-			} else {
-				$('.autofilled_field').html(data);
+			if (data != "default"){
+				if ($('.autofilled_field[data-autofilled_type="'+tipo+'"]').is('input')){
+					$('.autofilled_field[data-autofilled_type="'+tipo+'"]').val(data);
+				} else {
+					$('.autofilled_field[data-autofilled_type="'+tipo+'"]').html(data);
+				}
 			}
+
+			if (tipos.length > 0){
+				autofill_field(tipos);
+			}		
 		}
 	});
 }
+
+/*
+function append_attr(attr, value){
+	old_values = $(this).attr(attr);
+	$(this).attr(attr, value + old_values)
+}
+*/

@@ -8,7 +8,7 @@ module IssuesControllerPatch
     base.send(:include, InstanceMethods)
     base.class_eval do
       unloadable  # Send unloadable so it will be reloaded in development
-      skip_before_filter :authorize, :only => [:get_exposition_level, :get_bill_amount, :get_bpo_total]
+      skip_before_filter :authorize, :only => [:get_exposition_level, :get_bill_amount, :get_bpo_total, :get_currency_exchange, :get_currency_exchange_bpo]
     end
   end
 
@@ -33,7 +33,7 @@ module IssuesControllerPatch
         @cobrado = facturado.to_f * (1.0+(iva.to_f/100.0))
         render :text => @cobrado
       else 
-        render :text => '0' #:nothing => true
+        render :text => 0.0 #:nothing => true
       end
     end
 
@@ -44,13 +44,74 @@ module IssuesControllerPatch
 
       if anual.present? and inicio.present? and fin.present?
         dias = (fin.to_date - inicio.to_date).to_i + 1
+        logger.info dias.inspect
         total = (anual.to_f * dias)/365
         render :text => total
       else
-        render :text => '0' #:nothing => true
+        render :text => 0.0 #:nothing => true
       end
     end
 
+    def get_currency_exchange
+      moneda = params[:moneda]
+      original = params[:original]
+      fin = params[:fin]
+
+      if moneda.present? and original.present? and Setting.plugin_redmine_emergya_adjustments['plugin_currency_manager'].present?
+        begin
+          if moneda == 'EUR'
+            euros = "default" #original.to_f
+          elsif fin.present?
+            logger.info fin.inspect
+            rango = CurrencyRange.get_range(moneda, fin) #SapConnection.get_value(moneda,fin)
+            logger.info rango.inspect
+            euros = original.to_f * rango[:value].to_f
+          else
+            euros = original.to_f * CurrencyRange.get_current(moneda).to_f
+          end
+
+          render :text => euros
+        rescue
+          render :status => 400
+        end
+      else
+        render :text => 0.0
+      end
+    end
+
+=begin
+    def get_currency_exchange_bpo
+      moneda = params[:moneda]
+      original = params[:original]
+      inicio = params[:inicio]
+      fin = params[:fin]
+
+      if moneda.present? and original.present? and Setting.plugin_redmine_emergya_adjustments['plugin_currency_manager'].present?
+        begin
+          total_days = (fin.to_date - inicio.to_date).to_i + 1
+          if moneda == 'EUR'
+            euros = original.to_f
+          elsif inicio.present? and fin.present?
+            euros = CurrencyRange.find(:all, :conditions => ["start_date <= ? AND due_date >= ?",fin.to_date, inicio.to_date]).inject(0.0){|sum, range|
+              days = ([range[:due_date].to_date, fin.to_date].min - [range[:start_date].to_date, inicio.to_date].max).to_i + 1 
+              total_days -= days
+              sum += (days * range[:value].to_f * original.to_f) / 365.0
+            }
+
+            euros += (total_days * CurrencyRange.get_current(moneda).to_f * original.to_f) / 365.0
+          else
+            euros = (total_days * CurrencyRange.get_current(moneda).to_f * original.to_f) / 365.0
+          end
+
+          render :text => euros
+        rescue
+          render :text => 0.0
+        end
+      else
+        render :text => 0.0
+      end
+    end
+=end
   end
   module ClassMethods
   end
