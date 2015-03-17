@@ -30,7 +30,8 @@ module IssuesControllerPatch
       iva = params[:iva]
 
       if facturado.present? and iva.present? and iva != 'Manual'
-        @cobrado = facturado.to_f * (1.0+(iva.to_f/100.0))
+        #@cobrado = facturado.to_f * (1.0+(iva.to_f/100.0))
+        @cobrado = AutofillOps.bill_total(facturado, iva)
         render :text => @cobrado
       else 
         render :text => 0.0 #:nothing => true
@@ -43,9 +44,7 @@ module IssuesControllerPatch
       fin = params[:fin]
 
       if anual.present? and inicio.present? and fin.present?
-        dias = (fin.to_date - inicio.to_date).to_i + 1
-        logger.info dias.inspect
-        total = (anual.to_f * dias)/365
+        total = AutofillOps.bpo_total(anual, inicio, fin)
         render :text => total
       else
         render :text => 0.0 #:nothing => true
@@ -59,17 +58,8 @@ module IssuesControllerPatch
 
       if moneda.present? and original.present? and Setting.plugin_redmine_emergya_adjustments['plugin_currency_manager'].present?
         begin
-          if moneda == 'EUR'
-            euros = "default" #original.to_f
-          elsif fin.present?
-            logger.info fin.inspect
-            rango = CurrencyRange.get_range(moneda, fin) #SapConnection.get_value(moneda,fin)
-            logger.info rango.inspect
-            euros = original.to_f * rango[:value].to_f
-          else
-            euros = original.to_f * CurrencyRange.get_current(moneda).to_f
-          end
-
+          euros = AutofillOps.currency_exchange(moneda, original, fin)
+      
           render :text => euros
         rescue
           render :status => 400

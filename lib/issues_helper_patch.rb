@@ -17,10 +17,12 @@ module IssuesHelperPatch
   end 
 
   module InstanceMethods
+    # Devuelve el id del campo del formulario asociado al campo establecido para la id del settings
     def get_setting_custom_field_id(id)
       '#issue_custom_field_values_'+Setting.plugin_redmine_emergya_adjustments[id]
     end
 
+    # Establecerá al campo del formulario con id = ID, como iniciador del autorellenado de los tipos indicados en TYPE (separados por espacio), pasandose como parametro con nombre = NAME
     def set_launcher(name, id, type)
       if id.first != '#'
         id = get_setting_custom_field_id(id)
@@ -29,6 +31,9 @@ module IssuesHelperPatch
       javascript_tag "$('#{id}').addClass('launcher').attr('data-attr_name','#{name}').attr('data-launcher_type','#{type}');"
     end
 
+    # Establecerá al campo del formulario con id = ID, como campo para autorellenar por el evento TYPE. Se le pueden pasar como opciones:
+    # :disabled => true : para mostrar el campo inicialmente como deshabilitado
+    # :class => '[clases]': para añadirle clases al campo
     def set_autofilled(id, type, options = {})
       if id.first != '#'
         id = get_setting_custom_field_id(id)
@@ -42,6 +47,7 @@ module IssuesHelperPatch
       javascript_tag script+";"
     end
 
+    # El campo del formulario con id = ID_TOGGLE se mostrará habilitado/deshabilitado (según mode sea 'enable' o 'disable') cuando el campo del formulario con id = ID_OBSERVE tome el valor VALUE
     def set_toggling(mode, id_toggle, id_observe, value)
       if ['enable','disable'].include?(mode)
         id_toggle = get_setting_custom_field_id(id_toggle) if id_toggle.first != '#'
