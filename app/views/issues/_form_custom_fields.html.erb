@@ -69,11 +69,11 @@ url['bpo_total_cost'] = "/get_bpo_total";
     autofill_field(['bpo_total_cost']);
   </script>
   <% if Setting.plugin_redmine_emergya_adjustments['plugin_currency_manager'].present? %>
-    <%= set_launcher('moneda', 'currency_custom_field', 'currency_exchange bpo_total_cost') %>
-    <%= set_launcher('original', 'currency_bpo_custom_field_orig', 'currency_exchange bpo_total_cost') %>
+    <%= set_launcher('moneda', 'currency_custom_field', 'currency_exchange_bpo bpo_total_cost') %>
+    <%= set_launcher('original', 'currency_bpo_custom_field_orig', 'currency_exchange_bpo bpo_total_cost') %>
     <%= set_launcher('inicio', '#issue_start_date', 'currency_exchange_bpo bpo_total_cost') %>
-    <%= set_launcher('fin', '#issue_due_date', 'currency_exchange bpo_total_cost') %>
-    <%= set_autofilled('currency_bpo_custom_field_conv', 'currency_exchange') %>
+    <%= set_launcher('fin', '#issue_due_date', 'currency_exchange_bpo bpo_total_cost') %>
+    <%= set_autofilled('currency_bpo_custom_field_conv', 'currency_exchange_bpo') %>
 
     <%= set_toggling('enable', 'currency_bpo_custom_field_conv', 'currency_custom_field', 'EUR') %>
     <%= set_toggling('disable', 'currency_bpo_custom_field_orig', 'currency_custom_field', 'EUR') %>

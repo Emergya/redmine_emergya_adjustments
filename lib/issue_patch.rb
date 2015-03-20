@@ -24,7 +24,9 @@ module IssuePatch
         issue.tracker_id == Setting.plugin_redmine_emergya_adjustments['bill_tracker'].to_i}
       after_save -> {update_currency_exchange 'provider'}, :if => Proc.new { |issue| 
         issue.tracker_id == Setting.plugin_redmine_emergya_adjustments['provider_tracker'].to_i}
-      after_save -> {update_currency_exchange 'bpo'}, :if => Proc.new { |issue| 
+      #after_save -> {update_currency_exchange 'bpo'}, :if => Proc.new { |issue| 
+      #  issue.tracker_id == Setting.plugin_redmine_emergya_adjustments['bpo_tracker'].to_i}
+      after_save :update_currency_exchange_bpo, :if => Proc.new { |issue| 
         issue.tracker_id == Setting.plugin_redmine_emergya_adjustments['bpo_tracker'].to_i}
       after_save :update_cobro, :if => Proc.new { |issue| 
         issue.tracker_id == Setting.plugin_redmine_emergya_adjustments['bill_tracker'].to_i}
@@ -39,7 +41,6 @@ module IssuePatch
   module InstanceMethods
     # Para no tener que reiniciar el servidor cada vez que se modifica algo
     #unloadable
-
     def update_cobro
       facturacion = CustomValue.find_by_customized_id_and_custom_field_id(self.id,
         Setting.plugin_redmine_emergya_adjustments['bill_invoice_custom_field'])
@@ -84,9 +85,9 @@ module IssuePatch
         if moneda.present? and original.present? and fin.present? and euros.present?
           total = AutofillOps.currency_exchange(moneda.value, original.value, fin.value)
           
-          if total != 'default'
+          #if total != 'default'
             euros.update_attribute('value', total)
-          end
+          #end
         end
       end
     end
@@ -130,7 +131,7 @@ module IssuePatch
         end
       end
     end
-
+=end
     def update_currency_exchange_bpo
       if Setting.plugin_redmine_emergya_adjustments['plugin_currency_manager']
         moneda = CustomValue.find_by_customized_id_and_custom_field_id(self.id,
@@ -143,12 +144,16 @@ module IssuePatch
           Setting.plugin_redmine_emergya_adjustments['currency_bpo_custom_field_conv'])
 
 
-        if moneda.present? and original.present? and self.due_date.present? and euros.present?
-          euros.update_attribute('value', AutofillOps.currency_exchange(moneda.value, original.value, self.due_date))
+        if moneda.present? and original.present? and self.start_date.present? and self.due_date.present? and euros.present?
+          total = AutofillOps.currency_exchange_bpo(moneda.value, original.value, self.start_date, self.due_date)
+          
+          #if total != 'default'
+            euros.update_attribute('value', total)
+          #end
         end
       end
     end
-=end
+    
     def validate_required_dates
       trackers = Setting.plugin_redmine_emergya_adjustments['trackers']
       if (trackers!=nil && (trackers.collect{|tracker| tracker.to_i}.include? tracker_id))
