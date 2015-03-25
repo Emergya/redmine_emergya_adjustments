@@ -34,6 +34,14 @@
   <% end %>
 
 <% when Setting.plugin_redmine_emergya_adjustments['provider_tracker'].to_i %>
+  <!-- Alerta cuando fecha de cobro < fecha de facturacion -->
+  <script>
+    var fecha_factura = $("<%=get_setting_custom_field_id('provider_billing_date_custom_field')%>");
+    var fecha_cobro = $("<%=get_setting_custom_field_id('provider_payment_date_custom_field')%>");
+
+    check_dates_listener(); 
+  </script>
+
   <!-- Autocompletado -->
   <% if Setting.plugin_redmine_emergya_adjustments['plugin_currency_manager'].present? %>
     <%= set_launcher('moneda', 'currency_custom_field', 'currency_exchange') %>

@@ -136,6 +136,58 @@
     <%= select_tag 'settings[bpo_total_cost_custom_field]', options %>
     <%= settings_observe_field('bpo_tracker', 'bpo_total_cost_custom_field') %>
   </p>
+
+  <p>
+    <label>Fecha de facturación de facturas</label>
+    <%
+      if Setting.plugin_redmine_emergya_adjustments['bill_tracker'].present? 
+        options = ('<option></option>'+options_from_collection_for_select(Tracker.find(Setting.plugin_redmine_emergya_adjustments['bill_tracker']).custom_fields, :id, :name, @settings['bill_billing_date_custom_field'].to_i)).html_safe
+      else
+        options = ('<option></option>').html_safe
+      end
+    %>
+    <%= select_tag 'settings[bill_billing_date_custom_field]', options %>    
+    <%= settings_observe_field('bill_tracker', 'bill_billing_date_custom_field') %>
+  </p>
+
+  <p>
+    <label>Fecha de cobro de facturas</label>
+    <%
+      if Setting.plugin_redmine_emergya_adjustments['bill_tracker'].present? 
+        options = ('<option></option>'+options_from_collection_for_select(Tracker.find(Setting.plugin_redmine_emergya_adjustments['bill_tracker']).custom_fields, :id, :name, @settings['bill_payment_date_custom_field'].to_i)).html_safe
+      else
+        options = ('<option></option>').html_safe
+      end
+    %>
+    <%= select_tag 'settings[bill_payment_date_custom_field]', options %>
+    <%= settings_observe_field('bill_tracker', 'bill_payment_date_custom_field') %>
+  </p>
+
+  <p>
+    <label>Fecha de facturación de proveedores</label>
+    <%
+      if Setting.plugin_redmine_emergya_adjustments['provider_tracker'].present? 
+        options = ('<option></option>'+options_from_collection_for_select(Tracker.find(Setting.plugin_redmine_emergya_adjustments['provider_tracker']).custom_fields, :id, :name, @settings['provider_billing_date_custom_field'].to_i)).html_safe
+      else
+        options = ('<option></option>').html_safe
+      end
+    %>
+    <%= select_tag 'settings[provider_billing_date_custom_field]', options %>    
+    <%= settings_observe_field('provider_tracker', 'provider_billing_date_custom_field') %>
+  </p>
+
+  <p>
+    <label>Fecha de cobro de proveedores</label>
+    <%
+      if Setting.plugin_redmine_emergya_adjustments['provider_tracker'].present? 
+        options = ('<option></option>'+options_from_collection_for_select(Tracker.find(Setting.plugin_redmine_emergya_adjustments['provider_tracker']).custom_fields, :id, :name, @settings['provider_payment_date_custom_field'].to_i)).html_safe
+      else
+        options = ('<option></option>').html_safe
+      end
+    %>
+    <%= select_tag 'settings[provider_payment_date_custom_field]', options %>
+    <%= settings_observe_field('provider_tracker', 'provider_payment_date_custom_field') %>
+  </p>
   
 </fieldset>
 

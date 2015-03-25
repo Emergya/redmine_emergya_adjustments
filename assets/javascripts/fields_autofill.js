@@ -68,9 +68,41 @@ function send_query(tipos){
 	});
 }
 
-/*
-function append_attr(attr, value){
-	old_values = $(this).attr(attr);
-	$(this).attr(attr, value + old_values)
-}
+
+
+
+function check_dates_listener(){
+	$('#content').prepend('<div class="flash warning jquery_flash" id="jquery_flash_warning">La fecha de cobro es menor que la de facturación, ¿está usted seguro?.</div>');
+    $('#content #jquery_flash_warning').hide();
+
+    fecha_factura.live('change', function(){
+        check_dates(fecha_factura, fecha_cobro);
+    });
+
+    fecha_cobro.live('change', function(){
+        check_dates(fecha_factura, fecha_cobro);
+    });
+
+/*    
+    console.log(fecha_factura.closest("form"));
+	fecha_factura.closest("form").submit(function(event){
+		event.preventDefault();
+		check_dates(fecha_factura, fecha_cobro);
+	});
 */
+}
+
+function check_dates(bill, pay){
+	if (bill.val() != "" && pay.val() != "" && bill.val() > pay.val()){
+	  $('#jquery_flash_warning').show();
+	  //$('#jquery_flash_warning').center();
+	  $('html, body').animate({ scrollTop: $("#jquery_flash_warning").offset().top }, 200);
+	} else {
+	  $('#jquery_flash_warning').hide();
+	}
+}
+
+// Borra mensajes 'flash' generador por jquery
+function clear_jquery_flash(){
+	$('#content .jquery_flash').remove();
+}
