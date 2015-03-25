@@ -1,27 +1,13 @@
-# Run initializers
-# Needs to be atop requires because some of them need to be run after initialization
-#Dir["#{File.dirname(__FILE__)}/config/initializers/**/*.rb"].sort.each do |initializer|
-#  require initializer
-#end
-
-# Get messages from locales
-#Dir[File.join("#{File.dirname(__FILE__)}/config/locales/*.yml")].each do |locale|
-#  I18n.load_path.unshift(locale)
-#end
-
-#require 'redmine'
-#require 'issues_dates_required_patch'
 require 'issue_patch'
 require 'issues_controller_patch'
 require 'queries_helper_patch'
 require 'issues_helper_patch'
 require 'settings_helper_patch'
 require 'hooks'
-
+require 'currency_range_patch'
 
 Rails.configuration.to_prepare do
   TimelogController.send(:helper, :queries)
-#  IssuesController.send(:helper, :queries)
   IssuesController.send(:helper, :issues)
   SettingsController.send(:helper, :settings)
 end
