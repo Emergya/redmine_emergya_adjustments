@@ -79,22 +79,7 @@ module IssuesControllerPatch
       if moneda.present? and original.present? and Setting.plugin_redmine_emergya_adjustments['plugin_currency_manager'].present?
         begin
           euros = AutofillOps.currency_exchange_bpo(moneda, original, inicio, fin)
-=begin          
-          total_days = (fin.to_date - inicio.to_date).to_i + 1
-          if moneda == 'EUR'
-            euros = original.to_f
-          elsif inicio.present? and fin.present?
-            euros = CurrencyRange.find(:all, :conditions => ["start_date <= ? AND due_date >= ?",fin.to_date, inicio.to_date]).inject(0.0){|sum, range|
-              days = ([range[:due_date].to_date, fin.to_date].min - [range[:start_date].to_date, inicio.to_date].max).to_i + 1 
-              total_days -= days
-              sum += (days * range[:value].to_f * original.to_f) / 365.0
-            }
 
-            euros += (total_days * CurrencyRange.get_current(moneda).to_f * original.to_f) / 365.0
-          else
-            euros = (total_days * CurrencyRange.get_current(moneda).to_f * original.to_f) / 365.0
-          end
-=end
           render :text => euros
         rescue
           render :status => 400

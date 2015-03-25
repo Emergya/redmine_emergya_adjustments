@@ -1,3 +1,12 @@
+// Rutas a las acciones de "issues_controller" para los procesamientos de autocompletado
+var url = {
+	'risk': "/get_exposition_level",
+	'bill_cost': "/get_bill_amount",
+	'currency_exchange': "/get_currency_exchange",
+	'currency_exchange_bpo': "/get_currency_exchange_bpo",
+	'bpo_total_cost': "/get_bpo_total"
+};
+
 $(document).ready(function(){
 /*
 	$('.autofilled_field').live('focus', function(){
