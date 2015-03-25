@@ -79,9 +79,9 @@ function check_dates_listener(){
         check_dates(fecha_factura, fecha_cobro);
     });
 
-    fecha_cobro.live('change', function(){
-        check_dates(fecha_factura, fecha_cobro);
-    });
+//    fecha_cobro.live('change', function(){
+//        check_dates(fecha_factura, fecha_cobro);
+//    });
 
 /*    
     console.log(fecha_factura.closest("form"));
