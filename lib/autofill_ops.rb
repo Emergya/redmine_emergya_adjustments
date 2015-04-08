@@ -44,25 +44,26 @@ class AutofillOps
     total_days = (fin.to_date - inicio.to_date).to_i + 1
     if moneda == 'EUR'
       euros = original.to_f
-    elsif inicio.present? and fin.present?
+    elsif inicio.present? and fin.present? and fin.to_date > inicio.to_date
+      remaining_days = total_days
       euros = CurrencyRange.find(:all, :conditions => ["start_date <= ? AND due_date >= ?",fin.to_date.beginning_of_day, inicio.to_date]).inject(0.0){|sum, range|
         days = ([range[:due_date].to_date, fin.to_date].min - [range[:start_date].to_date, inicio.to_date].max).to_i + 1 
-        total_days -= days
+        remaining_days -= days
 
         if range[:value].to_f > 0.0
-          sum += (days * original.to_f) / range[:value].to_f
+          sum += (original.to_f * range[:value].to_f * days) / total_days
         end
 
         sum
       }
       valor = CurrencyRange.get_current(moneda).to_f
       if valor > 0.0
-        euros += (total_days * original.to_f) / valor
+        euros += (original.to_f * valor * remaining_days) / total_days
       end
     else
-      CurrencyRange.get_current(moneda).to_f
+      valor = CurrencyRange.get_current(moneda).to_f
       if valor > 0.0
-        euros = (total_days * original.to_f) / valor
+        euros = original.to_f * valor
       else
         euros = 0.0
       end
