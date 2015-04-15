@@ -39,7 +39,7 @@ module CurrencyRangePatch
     def get_issues_to_update(currency_type)
       currency_custom_field = Setting.plugin_redmine_emergya_adjustments['currency_custom_field']
 
-      Issue.find(:all, :include => :custom_values, :conditions => ["custom_values.custom_field_id = ? AND custom_values.value = ?", currency_custom_field, currency_type])
+      Issue.find(:all, :readonly => false, :joins => :custom_values, :conditions => ["custom_values.custom_field_id = ? AND custom_values.value = ?", currency_custom_field, currency_type])
     end
   end
 
