@@ -5,6 +5,7 @@ require 'issues_helper_patch'
 require 'settings_helper_patch'
 require 'hooks'
 require 'currency_range_patch'
+require 'hooks_view_listener'
 
 Rails.configuration.to_prepare do
   TimelogController.send(:helper, :queries)

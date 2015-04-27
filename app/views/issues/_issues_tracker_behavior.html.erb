@@ -1,3 +1,7 @@
+<% content_for :header_tags do %>
+  <%= javascript_include_tag "fields_autofill.js", :plugin => 'redmine_emergya_adjustments' %>
+<% end %>
+
 <!-- Borra mensajes flash generados por jquery en cambio de cambiar de tracker -->
 <script> clear_jquery_flash(); </script>
 

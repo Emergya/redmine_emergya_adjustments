@@ -19,7 +19,11 @@ module IssuesHelperPatch
   module InstanceMethods
     # Devuelve el id del campo del formulario asociado al campo establecido para la id del settings
     def get_setting_custom_field_id(id)
-      '#issue_custom_field_values_'+Setting.plugin_redmine_emergya_adjustments[id]
+      if Setting.plugin_redmine_emergya_adjustments[id].present?
+        '#issue_custom_field_values_'+Setting.plugin_redmine_emergya_adjustments[id]
+      else
+        nil
+      end
     end
 
     # Establecerá al campo del formulario con id = ID, como iniciador del autorellenado de los tipos indicados en TYPE (separados por espacio), pasandose como parametro con nombre = NAME
@@ -28,7 +32,9 @@ module IssuesHelperPatch
         id = get_setting_custom_field_id(id)
       end
 
-      javascript_tag "$('#{id}').addClass('launcher').attr('data-attr_name','#{name}').attr('data-launcher_type','#{type}');"
+      if id.present?
+        javascript_tag "$('#{id}').addClass('launcher').attr('data-attr_name','#{name}').attr('data-launcher_type','#{type}');"
+      end
     end
 
     # Establecerá al campo del formulario con id = ID, como campo para autorellenar por el evento TYPE. Se le pueden pasar como opciones:
@@ -39,12 +45,14 @@ module IssuesHelperPatch
         id = get_setting_custom_field_id(id)
       end
 
-      script = "$('#{id}').addClass('autofilled_field').attr('data-autofilled_type','#{type}')"
+      if id.present?
+        script = "$('#{id}').addClass('autofilled_field').attr('data-autofilled_type','#{type}')"
 
-      script += ".prop('disabled',#{options[:disabled]})" if options[:disabled].present?
-      script += ".addClass('#{options[:class]}')" if options[:class].present?
+        script += ".prop('disabled',#{options[:disabled]})" if options[:disabled].present?
+        script += ".addClass('#{options[:class]}')" if options[:class].present?
 
-      javascript_tag script+";"
+        javascript_tag script+";"
+      end
     end
 
     # El campo del formulario con id = ID_TOGGLE se mostrará habilitado/deshabilitado (según mode sea 'enable' o 'disable') cuando el campo del formulario con id = ID_OBSERVE tome el valor VALUE
@@ -53,21 +61,23 @@ module IssuesHelperPatch
         id_toggle = get_setting_custom_field_id(id_toggle) if id_toggle.first != '#'
         id_observe = get_setting_custom_field_id(id_observe) if id_observe.first != '#'
         
-        script = "if ($('#{id_observe}').val() == '#{value}'){
-          $('#{id_toggle}').prop('disabled', #{mode != 'enable'});
-        } else {
-          $('#{id_toggle}').prop('disabled', #{mode == 'enable'});
-        }
-
-        $('#{id_observe}').live('change', function(){
-          if (this.value == '#{value}'){
+        if id_toggle.present? and id_observe.present?
+          script = "if ($('#{id_observe}').val() == '#{value}'){
             $('#{id_toggle}').prop('disabled', #{mode != 'enable'});
           } else {
             $('#{id_toggle}').prop('disabled', #{mode == 'enable'});
           }
-        });"
 
-        javascript_tag script
+          $('#{id_observe}').live('change', function(){
+            if (this.value == '#{value}'){
+              $('#{id_toggle}').prop('disabled', #{mode != 'enable'});
+            } else {
+              $('#{id_toggle}').prop('disabled', #{mode == 'enable'});
+            }
+          });"
+
+          javascript_tag script
+        end
       end
     end
   end
