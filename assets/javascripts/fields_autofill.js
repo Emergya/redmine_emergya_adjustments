@@ -5,13 +5,11 @@ $(document).ready(function(){
 	});
 */
 	
-
-	$('.launcher').live('change', function(){
+	$(document).on('change', '.launcher', function(){
 		autofill_field();
 	});
 
 });
-
 
 function autofill_field(){
 	params = {};

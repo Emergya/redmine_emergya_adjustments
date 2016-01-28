@@ -13,6 +13,7 @@
 #require 'issues_dates_required_patch'
 require 'issue_patch'
 require 'issues_controller_patch'
+require 'settings_controller_patch'
 require 'queries_helper_patch'
 require 'hooks'
 
@@ -26,8 +27,9 @@ Redmine::Plugin.register :redmine_emergya_adjustments do
   name 'Emergya Adjustments Plugin'
   author 'ogonzalez, jresinas'
   description 'Different Redmine features to improve the fit with Emergya workflows'
-  version '0.0.2'
+  version '0.0.3'
   author_url 'http://www.emergya.es'
 
+  requires_redmine_plugin :redmine_base_deface, :version_or_higher => '0.0.1'
   settings :default => { :trackers => []}, :partial => 'settings/settings'
 end

@@ -2,22 +2,6 @@
   <%= javascript_include_tag "fields_autofill.js", :plugin => 'redmine_emergya_adjustments' %>
 <% end %>
 
-<div class="splitcontent">
-<div class="splitcontentleft">
-<% i = 0 %>
-<% split_on = (@issue.custom_field_values.size / 2.0).ceil - 1 %>
-<% @issue.editable_custom_field_values.each do |value| %>
-  <p><%= custom_field_tag_with_label :issue, value, :required => @issue.required_attribute?(value.custom_field_id) %></p>
-<% if i == split_on -%>
-</div><div class="splitcontentright">
-<% end -%>
-<% i += 1 -%>
-<% end -%>
-</div>
-</div>
-
-
-
 <% case @issue.tracker_id %>
 <% when Setting.plugin_redmine_emergya_adjustments['risk_tracker'].to_i %>
   <script type="text/javascript">
@@ -49,14 +33,13 @@
       cobro.prop('disabled',true);
     }
 
-    iva.live('change', function(){
+    iva.on('change', function(){
       if (this.value == 'Manual'){
         cobro.prop('disabled', false);
       } else {
         cobro.prop('disabled', true);
       }
     });
-
 
   </script>
 <% when Setting.plugin_redmine_emergya_adjustments['bpo_tracker'].to_i %>

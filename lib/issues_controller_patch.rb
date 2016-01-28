@@ -19,9 +19,9 @@ module IssuesControllerPatch
       impacto = params[:impacto]
       probabilidad = params[:probabilidad]
 
-      @opciones = ActiveSupport::JSON.decode(params[:options].gsub('\"', '"'))
+      @opciones = ActiveSupport::JSON.decode(params[:options].gsub('\"', '"').gsub('&nbsp;', ''))
       @exposicion = ExpositionLevel.getExpositionLevelValue(impacto,probabilidad)
-      
+
       render :layout => false, :inline => "<%= options_for_select(@opciones, @exposicion) %>"
     end
 
