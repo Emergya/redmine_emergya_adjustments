@@ -70,6 +70,13 @@ Tipos de peticiones afectadas:
         ('<option></option>' +
           options_from_collection_for_select(Tracker.all, :id, :name, @settings['bpo_tracker'].to_i)).html_safe %>
   </p>
+
+  <p>
+    <label>Tracker genérico</label>
+    <%= select_tag 'settings[generic_tracker]',
+        ('<option></option>' +
+          options_from_collection_for_select(Tracker.all, :id, :name, @settings['generic_tracker'].to_i)).html_safe %>
+  </p>
 </fieldset>
 
 <fieldset>

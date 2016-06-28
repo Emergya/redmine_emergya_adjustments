@@ -24,6 +24,8 @@ module IssuePatch
         issue.tracker_id == Setting.plugin_redmine_emergya_adjustments['bill_tracker'].to_i}
       after_save :update_bpo_total, :if => Proc.new { |issue| 
         issue.tracker_id == Setting.plugin_redmine_emergya_adjustments['bpo_tracker'].to_i}
+
+      alias_method_chain :available_custom_fields, :generic_tracker
     end
 
   end
@@ -73,6 +75,14 @@ module IssuePatch
         if due_date.nil? && status.is_closed
           errors.add(:due_date, I18n.t(:"activerecord.errors.models.issue.attributes.due_date.localized_error"))
         end
+      end
+    end
+
+    def available_custom_fields_with_generic_tracker
+      if Setting.plugin_redmine_emergya_adjustments['generic_tracker'].present? and self.tracker_id.to_s == Setting.plugin_redmine_emergya_adjustments['generic_tracker']
+        self.custom_values.map(&:custom_field)
+      else
+        available_custom_fields_without_generic_tracker
       end
     end
   end
