@@ -9,7 +9,7 @@ module QueriesHelperPatch
     base.send(:include, InstanceMethods)
 
     base.class_eval do
-      #unloadable  # Send unloadable so it will be reloaded in development
+      #
     end
   end
 

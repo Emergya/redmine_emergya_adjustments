@@ -7,7 +7,7 @@ module IssuesControllerPatch
     base.extend(ClassMethods)
     base.send(:include, InstanceMethods)
     base.class_eval do
-      unloadable  # Send unloadable so it will be reloaded in development
+      
       skip_before_filter :authorize, :only => [:get_exposition_level, :get_bill_amount, :get_bpo_total]
     end
   end

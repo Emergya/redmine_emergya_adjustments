@@ -15,10 +15,11 @@ end
 module IssuePatch
 
   def self.included(base) # :nodoc:
-    #unloadable
+    #
     base.send(:include, InstanceMethods)
 
     base.class_eval do
+        
       validate  :validate_required_dates
       after_save :update_cobro, :if => Proc.new { |issue| 
         issue.tracker_id == Setting.plugin_redmine_emergya_adjustments['bill_tracker'].to_i}
@@ -33,7 +34,7 @@ module IssuePatch
 
   module InstanceMethods
     # Para no tener que reiniciar el servidor cada vez que se modifica algo
-    #unloadable
+    #
 
     def update_cobro
       facturacion = CustomValue.find_by_customized_id_and_custom_field_id(self.id,
@@ -57,8 +58,7 @@ module IssuePatch
         Setting.plugin_redmine_emergya_adjustments['bpo_annual_cost_custom_field'])
 
       if coste_anual.present?
-        coste_total = CustomValue.find_by_customized_id_and_custom_field_id(self.id,
-            Setting.plugin_redmine_emergya_adjustments['bpo_total_cost_custom_field'])
+        coste_total = CustomValue.find_or_create_by(customized_id: self.id, customized_type: 'Issue', custom_field_id: Setting.plugin_redmine_emergya_adjustments['bpo_total_cost_custom_field'])
         anual = coste_anual.value.to_f
         dias = (self.due_date.to_date - self.start_date.to_date).to_i + 1
         
