@@ -5,6 +5,8 @@ module Emergya_adjustments
       	context[:issue].done_ratio = 100
       end 
     end
+    render_on :view_issues_form_details_bottom,
+              :partial => 'issues/tracking_custom_fields'
   end
 end
 
