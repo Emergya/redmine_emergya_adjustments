@@ -15,7 +15,6 @@ end
 module IssuePatch
 
   def self.included(base) # :nodoc:
-    #
     base.send(:include, InstanceMethods)
 
     base.class_eval do
@@ -33,10 +32,13 @@ module IssuePatch
 
 
   module InstanceMethods
-    # Para no tener que reiniciar el servidor cada vez que se modifica algo
-    #
-
     def update_cobro
+      # Tenemos que llamar al método update_amount del plugin redmine_ie antes de ejecutar este. 
+      # No importa que update_amount se vuelva a ejecutar tras la ejecución de este método
+      # El problema es que ambos callback deben ser de tipo after_save para detectar la modificación de sus campos personalizados, pero update_amount debe ejecutarse antes que update_cobro
+      self.update_amount
+      ########
+
       facturacion = CustomValue.find_by_customized_id_and_custom_field_id(self.id,
         Setting.plugin_redmine_emergya_adjustments['bill_invoice_custom_field'])
 
