@@ -39,6 +39,7 @@ function autofill_field(){
 			} else {
 				$('.autofilled_field').html(data);
 			}
+			$('.autofilled_field').trigger('change');
 		}
 	});
 }
