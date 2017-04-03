@@ -10,11 +10,9 @@ namespace :emergya do
 		users = User.active
 
 		users.each do |u|
-			projects = u.projects.active
+			data = TimeEntry.where(user_id: u.id, tyear: year).group_by(&:project)
 
-			projects.each do |p|
-				te = TimeEntry.where(user_id: u.id, project_id: p.id, tyear: year)
-
+			data.each do |p, te|
 				if te.present?
 					result = []
 
@@ -24,7 +22,7 @@ namespace :emergya do
 					result << p.custom_values.find_by(custom_field_id: CF_REGION_ID).value
 					result << p.custom_values.find_by(custom_field_id: CF_SERVICIO_ID).value
 					(1..12).each do |i|
-						result << te.where(tmonth: i).sum(:hours)
+						result << te.select{|e| e[:tmonth] == i}.sum(&:hours)
 					end
 
 					results << result
