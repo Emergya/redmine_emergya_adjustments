@@ -154,6 +154,24 @@ Tipos de peticiones afectadas:
   </p>
 
   <p>
+    <label>Facturación de la factura en moneda local</label>
+    <%
+      if Setting.plugin_redmine_emergya_adjustments['bill_tracker'].present? 
+        options = ('<option></option>'+options_from_collection_for_select(Tracker.find(Setting.plugin_redmine_emergya_adjustments['bill_tracker']).custom_fields, :id, :name, @settings['bill_ml_invoice_custom_field'].to_i)).html_safe
+      else
+        options = ('<option></option>').html_safe
+      end
+    %>
+    <%= select_tag 'settings[bill_ml_invoice_custom_field]', options %>
+    <!-- observe_field replacement for Redmine 2.3-->
+    <script>
+      $('#settings_bill_tracker').change(function(){
+      $('#settings_bill_ml_invoice_custom_field').load('/settings/show_tracker_custom_fields', {tracker: $('#settings_bill_tracker').val()});
+      });
+    </script>
+  </p>
+
+  <p>
     <label>Iva de la factura</label>
     <%
       if Setting.plugin_redmine_emergya_adjustments['bill_tracker'].present? 
@@ -185,6 +203,24 @@ Tipos de peticiones afectadas:
     <script>
       $('#settings_bill_tracker').change(function(){
       $('#settings_bill_amount_custom_field').load('/settings/show_tracker_custom_fields', {tracker: $('#settings_bill_tracker').val()});
+      });
+    </script>
+  </p>
+
+  <p>
+    <label>Cobro de la factura en moneda local</label>
+    <%
+      if Setting.plugin_redmine_emergya_adjustments['bill_tracker'].present? 
+        options = ('<option></option>'+options_from_collection_for_select(Tracker.find(Setting.plugin_redmine_emergya_adjustments['bill_tracker']).custom_fields, :id, :name, @settings['bill_ml_amount_custom_field'].to_i)).html_safe
+      else
+        options = ('<option></option>').html_safe
+      end
+    %>
+    <%= select_tag 'settings[bill_ml_amount_custom_field]', options %>
+    <!-- observe_field replacement for Redmine 2.3-->
+    <script>
+      $('#settings_bill_tracker').change(function(){
+      $('#settings_bill_ml_amount_custom_field').load('/settings/show_tracker_custom_fields', {tracker: $('#settings_bill_tracker').val()});
       });
     </script>
   </p>
