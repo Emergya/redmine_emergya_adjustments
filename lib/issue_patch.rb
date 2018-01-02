@@ -53,6 +53,21 @@ module IssuePatch
           cobro.update_attribute('value', facturacion.value.to_f * (1.0 + (iva.value.to_f/100.0)))
         end
       end
+
+      facturacion_ml = CustomValue.find_by_customized_id_and_custom_field_id(self.id,
+        Setting.plugin_redmine_emergya_adjustments['bill_ml_invoice_custom_field'])
+
+      if facturacion_ml.present?
+        iva = CustomValue.find_by_customized_id_and_custom_field_id(self.id,
+            Setting.plugin_redmine_emergya_adjustments['bill_iva_custom_field'])
+
+        if iva.present? and iva.value != 'Manual'
+          cobro_ml = CustomValue.find_by_customized_id_and_custom_field_id(self.id,
+            Setting.plugin_redmine_emergya_adjustments['bill_ml_amount_custom_field'])
+          
+          cobro_ml.update_attribute('value', facturacion_ml.value.to_f * (1.0 + (iva.value.to_f/100.0)))
+        end
+      end
     end
 
     def update_bpo_total
