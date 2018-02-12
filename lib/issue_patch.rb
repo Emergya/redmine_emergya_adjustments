@@ -65,7 +65,9 @@ module IssuePatch
           cobro_ml = CustomValue.find_by_customized_id_and_custom_field_id(self.id,
             Setting.plugin_redmine_emergya_adjustments['bill_ml_amount_custom_field'])
           
-          cobro_ml.update_attribute('value', facturacion_ml.value.to_f * (1.0 + (iva.value.to_f/100.0)))
+          if cobro_ml.present?
+            cobro_ml.update_attribute('value', facturacion_ml.value.to_f * (1.0 + (iva.value.to_f/100.0)))
+          end
         end
       end
     end
