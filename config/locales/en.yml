@@ -1,4 +1,8 @@
 en:
+  permission_avoid_time_entries: Avoid time entries
+  emergya:
+    label_avoid_time_entries: Avoid time entries
+    error_disabled_project_time_entries: Disabled time entries
   activerecord:
     errors:
       models:
@@ -8,3 +12,4 @@ en:
               localized_error: "can't be blank when closing the issue"
             start_date:
               localized_error: "can't be blank"
+

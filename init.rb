@@ -15,6 +15,9 @@ require 'issue_patch'
 require 'issues_controller_patch'
 require 'settings_controller_patch'
 require 'queries_helper_patch'
+require 'projects_controller_patch'
+require 'projects_helper_patch'
+require 'time_entry_patch'
 require 'hooks'
 
 
@@ -29,6 +32,8 @@ Redmine::Plugin.register :redmine_emergya_adjustments do
   description 'Different Redmine features to improve the fit with Emergya workflows'
   version '0.0.3'
   author_url 'http://www.emergya.es'
+
+  permission :avoid_time_entries, { :projects => [:settings] }
 
   requires_redmine_plugin :redmine_base_deface, :version_or_higher => '0.0.1'
   settings :default => { :trackers => []}, :partial => 'settings/settings'

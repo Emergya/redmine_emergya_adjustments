@@ -1,0 +1,10 @@
+<%= form_tag(projects_setting_time_entries_path(@project), :method => :put, :class => "tabular") do %>
+<div class="box tabular">
+<p>
+	<%= check_box_tag :avoid_time_entries, 1, @project.avoid_time_entries %>
+	<%= l(:"emergya.label_avoid_time_entries") %>
+</p>
+</div>
+
+<%= submit_tag l(:button_save) %>
+<% end %>

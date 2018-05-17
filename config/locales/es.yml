@@ -1,5 +1,9 @@
 
 es:
+  permission_avoid_time_entries: Prohibir carga de horas
+  emergya:
+    label_avoid_time_entries: Prohibir carga de horas
+    error_disabled_project_time_entries: Imputaciones deshabilitadas
   activerecord:
     errors:
       models:
