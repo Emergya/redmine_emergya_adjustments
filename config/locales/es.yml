@@ -1,9 +1,10 @@
 
 es:
   permission_avoid_time_entries: Prohibir carga de horas
-  permission_avoid_setting_projects: Prohibir configuración de proyecto
+  permission_avoid_setting_projects: Permitir configuración de proyecto
   emergya:
     label_avoid_time_entries: Prohibir carga de horas
+    label_avoid_setting_projects: Prohibir configuración de proyecto
     error_disabled_project_time_entries: Imputaciones deshabilitadas
   activerecord:
     errors:

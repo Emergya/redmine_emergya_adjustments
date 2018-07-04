@@ -1,8 +1,9 @@
 en:
   permission_avoid_time_entries: Avoid time entries
-  permission_avoid_setting_projects: Avoid project settings
+  permission_avoid_setting_projects: Allow project settings
   emergya:
     label_avoid_time_entries: Avoid time entries
+    label_avoid_setting_projects: Avoid project settings
     error_disabled_project_time_entries: Disabled time entries
   activerecord:
     errors:
