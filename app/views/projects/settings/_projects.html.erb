@@ -1,0 +1,10 @@
+<%= form_tag(projects_setting_projects_path(@project), :method => :put, :class => "tabular") do %>
+<div class="box tabular">
+<p>
+	<%= check_box_tag :avoid_setting_projects, 1, @project.avoid_setting_projects %>
+	<%= l(:"emergya.label_avoid_setting_projects") %>
+</p>
+</div>
+
+<%= submit_tag l(:button_save) %>
+<% end %>

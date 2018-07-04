@@ -34,6 +34,7 @@ Redmine::Plugin.register :redmine_emergya_adjustments do
   author_url 'http://www.emergya.es'
 
   permission :avoid_time_entries, { :projects => [:settings] }
+  permission :allow_project_settings, { :projects => [:settings] }
 
   requires_redmine_plugin :redmine_base_deface, :version_or_higher => '0.0.1'
   settings :default => { :trackers => []}, :partial => 'settings/settings'

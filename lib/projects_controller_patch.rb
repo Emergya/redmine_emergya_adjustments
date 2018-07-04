@@ -5,6 +5,7 @@ module ProjectsControllerPatch
     base.extend(ClassMethods)
     base.send(:include, InstanceMethods)
     base.class_eval do
+      alias_method_chain :update, :avoid_change_settings
     end
   end
 
@@ -19,6 +20,24 @@ module ProjectsControllerPatch
       end
 
       redirect_to settings_project_path(@project, :tab => 'time_entries')
+    end
+
+    def setting_projects
+      @project.avoid_setting_projects = params[:avoid_setting_projects]
+
+      if @project.save
+        flash[:notice] = l(:notice_successful_update)
+      else
+
+      end
+
+      redirect_to settings_project_path(@project, :tab => 'projects')
+    end
+
+    def update_with_avoid_change_settings
+      params[:project] = params[:project].select{|p| ['tracker_ids','issue_custom_field_ids'].include?(p)} if @project.avoid_setting_projects? and params[:project] and User.current.allowed_to?(:allow_project_settings, @project)
+
+      update_without_avoid_change_settings
     end
   end
 

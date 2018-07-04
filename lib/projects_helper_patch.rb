@@ -19,6 +19,7 @@ module ProjectsHelperPatch
     def project_settings_tabs_with_time_entries
       tabs = project_settings_tabs_without_time_entries
       tabs << {:name => 'time_entries', :action => :avoid_time_entries, :partial => 'projects/settings/time_entries', :label => :label_time_entry_plural}
+      tabs << {:name => 'projects', :action => :allow_project_settings, :partial => 'projects/settings/projects', :label => :label_project_plural}
 
       tabs.select {|tab| User.current.allowed_to?(tab[:action], @project)}
     end
