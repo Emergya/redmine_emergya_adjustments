@@ -10,7 +10,12 @@ namespace :emergya do
 	task :generate_cartera_csv, [:date] => :environment do |t, args|
 		date = args[:date].present? ? args[:date].to_date : DATE.to_date
 
-		projects = Project.joins(:bsc_info).where("DATE(bsc_project_infos.actual_start_date) <= ? AND DATE(bsc_project_infos.scheduled_finish_date) >= ?", date, date)
+		# projects = Project.joins(:bsc_info).where("DATE(bsc_project_infos.actual_start_date) <= ? AND DATE(bsc_project_infos.scheduled_finish_date) >= ?", date, date)
+		all_projects = Project.joins(:bsc_info).where("DATE(bsc_project_infos.actual_start_date) <= ?", date)
+		projects = []
+		all_projects.each do |project|
+			projects << project if (end_date = (project.last_checkpoint.present? ? project.last_checkpoint.scheduled_finish_date : project.bsc_info.scheduled_finish_date)).present? and end_date.to_date > date
+		end
 		headers = ["Nombre del Proyecto","Descripción","U. de Negocio","Ciclo de Vida","Clasificación (Tipología)","Tecnología","Esfuerzo","F. Inicio","F. Fin","Estado","Nombre JP","Nº integrantes del Equipo"]
 
 		results = [headers]
