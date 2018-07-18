@@ -14,4 +14,8 @@ en:
               localized_error: "can't be blank when closing the issue"
             start_date:
               localized_error: "can't be blank"
+        time_entry:
+          attributes:
+            issue:
+              is_closed: "is closed, it is not possible to log time entries"
 
