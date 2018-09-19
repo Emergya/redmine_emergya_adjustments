@@ -6,6 +6,7 @@ es:
     label_avoid_time_entries: Prohibir carga de horas
     label_avoid_setting_projects: Prohibir configuración de proyecto
     error_disabled_project_time_entries: Imputaciones deshabilitadas
+    error_issue_is_closed: No se pueden realizar imputaciones en peticiones cerradas
   activerecord:
     errors:
       models:
@@ -15,7 +16,3 @@ es:
               localized_error: "no puede estar en blanco al cerrar la tarea"
             start_date:
               localized_error: "no puede estar en blanco"
-        time_entry:
-          attributes:
-            issue:
-              is_closed: "está cerrada, no se pueden realizar imputaciones"
