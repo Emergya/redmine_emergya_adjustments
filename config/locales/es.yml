@@ -15,3 +15,7 @@ es:
               localized_error: "no puede estar en blanco al cerrar la tarea"
             start_date:
               localized_error: "no puede estar en blanco"
+        time_entry:
+          attributes:
+            issue:
+              is_closed: "está cerrada, no se pueden realizar imputaciones"
