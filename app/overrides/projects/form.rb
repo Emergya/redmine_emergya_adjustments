@@ -6,7 +6,7 @@ Deface::Override.new :virtual_path  => 'projects/_form',
                      	<% if @project.avoid_setting_projects? and !User.current.allowed_to?(:allow_project_settings, @project) %>
                      	<script>
 		                    $(document).ready(function(){ 
-		                    	$('input, textarea, select', 'div.box.tabular').attr('disabled',true); 
+		                    	$('input, textarea, select', 'form.edit_project div.box.tabular').attr('disabled',true); 
 	                    	});
 						</script>
 						<% end %>"
