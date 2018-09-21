@@ -27,7 +27,8 @@ module TimeEntryPatch
     def validate_time_entry_with_extended_restrictions
       validate_time_entry_without_extended_restrictions
       errors.add :base, l(:"emergya.error_issue_is_closed") if issue.status.is_closed
-      errors.add :spent_on, :greater_than_start_date if issue.start_date > spent_on
+      date = issue.start_date || issue.created_on
+      errors.add :spent_on, :greater_than_start_date if date > spent_on
     end    
   end
 
