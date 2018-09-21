@@ -5,6 +5,7 @@ en:
     label_avoid_time_entries: Avoid time entries
     label_avoid_setting_projects: Avoid project settings
     error_disabled_project_time_entries: Disabled time entries
+    error_issue_is_closed: It's not possible to log time entries on closed issues
   activerecord:
     errors:
       models:
@@ -14,8 +15,4 @@ en:
               localized_error: "can't be blank when closing the issue"
             start_date:
               localized_error: "can't be blank"
-        time_entry:
-          attributes:
-            issue:
-              is_closed: "is closed, it is not possible to log time entries"
 

@@ -35,8 +35,8 @@ module ProjectsControllerPatch
     end
 
     def update_with_avoid_change_settings
-      params[:project] = params[:project].select{|p| ['tracker_ids','issue_custom_field_ids'].include?(p)} if @project.avoid_setting_projects? and params[:project] and User.current.allowed_to?(:allow_project_settings, @project)
-
+      params[:project] = params[:project].select{|p| ['tracker_ids','issue_custom_field_ids'].include?(p)} if @project.avoid_setting_projects? and params[:project] and !User.current.allowed_to?(:allow_project_settings, @project)
+      
       update_without_avoid_change_settings
     end
   end
