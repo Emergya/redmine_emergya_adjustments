@@ -45,6 +45,49 @@ Tipos de peticiones afectadas:
     </tbody>
   </table>
 </fieldset>
+<fieldset>
+<legend>Bolsa de horas</legend>
+  <p>
+    <label>Tipos de peticiones soportados:</label>
+    <%= select_tag 'settings[prepaid_bundle_trackers]',
+      options_from_collection_for_select(Tracker.all, :id, :name,
+      (@settings['prepaid_bundle_trackers'] || []).collect{|tracker| tracker.to_i}), :multiple => true %>
+  </p>
+  <p>
+    <label>Campos personalizados afectados:</label>
+    <%
+      if Setting.plugin_redmine_emergya_adjustments['prepaid_bundle_trackers'].present? 
+        options = options_from_collection_for_select(IssueCustomField.joins(:trackers).where('custom_fields.field_format' => 'list', 'custom_fields_trackers.tracker_id' => Setting.plugin_redmine_emergya_adjustments['prepaid_bundle_trackers']).distinct, :id, :name,
+          (@settings['prepaid_bundle_custom_fields'] || []).collect{|custom_fields| custom_fields.to_i}).html_safe
+      else
+        options = ('<option></option>').html_safe
+      end
+    %>
+    <%= select_tag 'settings[prepaid_bundle_custom_fields]', options, :multiple => true %>
+    <script>
+      $('#settings_prepaid_bundle_trackers').change(function(){
+      $('#settings_prepaid_bundle_custom_fields').load('/settings/show_multiple_trackers_custom_fields', {trackers: $('#settings_prepaid_bundle_trackers').val()});
+      });
+    </script>
+  </p>
+  <p>
+    <label>Tipos de gasto/ingreso:</label>
+    <%
+      if Setting.plugin_redmine_emergya_adjustments['prepaid_bundle_custom_fields'].present?
+        options = options_for_select(CustomField.where(id: Setting.plugin_redmine_emergya_adjustments['prepaid_bundle_custom_fields']).map(&:possible_values).flatten.uniq, selected: @settings['prepaid_bundle_income_expense_types']).html_safe
+      else
+        options = ('<option></option>').html_safe
+      end
+    %>
+    <%= select_tag 'settings[prepaid_bundle_income_expense_types]', options, :multiple => true %>
+    <!-- observe_field replacement for Redmine 2.3-->
+    <script>
+      $('#settings_prepaid_bundle_custom_fields').change(function(){
+      $('#settings_prepaid_bundle_income_expense_types').load('/settings/show_income_expense_types', {prepaid_bundle_custom_fields: $('#settings_prepaid_bundle_custom_fields').val()});
+      });
+    </script>
+  </p>
+</fieldset>
 </div>
 
 <div class="splitcontentright">

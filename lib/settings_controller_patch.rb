@@ -24,6 +24,26 @@ module SettingsControllerPatch
       render :layout => false
     end
 
+    def show_multiple_trackers_custom_fields
+      if params[:trackers].present?
+        @options = IssueCustomField.joins(:trackers).where('custom_fields_trackers.tracker_id' => params[:trackers], 'custom_fields.field_format' => 'list').distinct
+      else
+        @options = []
+      end
+
+      render :layout => false
+    end
+
+    def show_income_expense_types
+      if params[:prepaid_bundle_custom_fields].present?
+        @options = CustomField.where(id: params[:prepaid_bundle_custom_fields]).map(&:possible_values).flatten.uniq
+      else
+        @options = []
+      end
+
+      render :layout => false
+    end
+
   end
   module ClassMethods
   end

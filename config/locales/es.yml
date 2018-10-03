@@ -7,6 +7,9 @@ es:
     label_avoid_setting_projects: Prohibir configuración de proyecto
     error_disabled_project_time_entries: Imputaciones deshabilitadas
     error_issue_is_closed: No se pueden realizar imputaciones en peticiones cerradas
+    error_currency_does_not_match: La divisa no coincide con la de la bolsa de horas
+    error_issue_type_does_not_match: no coincide con el de la bolsa de horas
+    error_prepaid_bundle_child_issue: Esta petición ya pertenece a una bolsa de horas existente
   activerecord:
     errors:
       models:

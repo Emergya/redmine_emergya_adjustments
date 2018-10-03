@@ -6,6 +6,9 @@ en:
     label_avoid_setting_projects: Avoid project settings
     error_disabled_project_time_entries: Disabled time entries
     error_issue_is_closed: It's not possible to log time entries on closed issues
+    error_currency_does_not_match: Currency does not match with prepaid bundle's
+    error_issue_type_does_not_match: does not match with prepaid bundle's
+    error_prepaid_bundle_child_issue: This issue already belongs to an existing prepaid bundle
   activerecord:
     errors:
       models:
