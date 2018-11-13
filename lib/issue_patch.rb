@@ -114,64 +114,64 @@ module IssuePatch
     def validate_prepaid_bundle_issue
       if Setting.plugin_redmine_emergya_adjustments['prepaid_bundle_trackers'].present? and Setting.plugin_redmine_emergya_adjustments['prepaid_bundle_custom_fields'].present? and Setting.plugin_redmine_emergya_adjustments['prepaid_bundle_income_expense_types'].present?
         invoice_type = self.editable_custom_field_values.detect{|cfv| Setting.plugin_redmine_emergya_adjustments['prepaid_bundle_custom_fields'].include?(cfv.custom_field_id.to_s)} if Setting.plugin_redmine_emergya_adjustments['prepaid_bundle_trackers'].include?(self.tracker_id.to_s)
-        currency = self.editable_custom_field_values.detect{|cfv| IE::Integration.currency_field_id == cfv.custom_field_id.to_s}
+        #currency = self.editable_custom_field_values.detect{|cfv| IE::Integration.currency_field_id == cfv.custom_field_id.to_s}
         is_bundle = invoice_type.present? and Setting.plugin_redmine_emergya_adjustments['prepaid_bundle_income_expense_types'].include? invoice_type.value
-        if self.root.present? and self.root_id != self.id and Setting.plugin_redmine_emergya_adjustments['prepaid_bundle_trackers'].include?(self.root.tracker_id.to_s)
-          invoice_type_root = self.root.editable_custom_field_values.detect{|cfv| Setting.plugin_redmine_emergya_adjustments['prepaid_bundle_custom_fields'].include?(cfv.custom_field_id.to_s)}
-          currency_root = self.root.custom_values.find_by_custom_field_id(IE::Integration.currency_field_id)
+        root_issue = self.root || Issue.find_by_id(parent_issue_id).root if parent_issue_id.present?
+        if root_issue.present? and root_issue.id != self.id and Setting.plugin_redmine_emergya_adjustments['prepaid_bundle_trackers'].include?(root_issue.tracker_id.to_s)
+          invoice_type_root = root_issue.editable_custom_field_values.detect{|cfv| Setting.plugin_redmine_emergya_adjustments['prepaid_bundle_custom_fields'].include?(cfv.custom_field_id.to_s)}
+          currency_root = root_issue.custom_values.find_by_custom_field_id(IE::Integration.currency_field_id)
           if Setting.plugin_redmine_emergya_adjustments['prepaid_bundle_income_expense_types'].include? invoice_type_root.value
             #errors.add(:base, l(:"emergya.error_currency_does_not_match")) unless currency.value == currency_root.value
-            errors.add(:tracker, l(:"emergya.error_issue_type_does_not_match")) unless self.root.tracker_id == self.tracker_id
+            errors.add(:tracker, l(:"emergya.error_issue_type_does_not_match")) unless root_issue.tracker_id == self.tracker_id
             errors.add(:base, l(:"emergya.error_prepaid_bundle_child_issue")) if is_bundle and invoice_type_root.value == invoice_type.value
           end
         end
       end
     end
 
+    def is_prepaid_bundle?
+      if Setting.plugin_redmine_emergya_adjustments['prepaid_bundle_trackers'].present? and Setting.plugin_redmine_emergya_adjustments['prepaid_bundle_custom_fields'].present? and Setting.plugin_redmine_emergya_adjustments['prepaid_bundle_income_expense_types'].present? and self.root.present? and self.root_id == self.id and Setting.plugin_redmine_emergya_adjustments['prepaid_bundle_trackers'].include?(self.tracker_id.to_s)
+        invoice_type = self.editable_custom_field_values.detect{|cfv| Setting.plugin_redmine_emergya_adjustments['prepaid_bundle_custom_fields'].include?(cfv.custom_field_id.to_s)}
+        Setting.plugin_redmine_emergya_adjustments['prepaid_bundle_income_expense_types'].include? invoice_type.value
+      else
+        false
+      end
+    end
+
     def update_prepaid_bundle
-      if Setting.plugin_redmine_emergya_adjustments['prepaid_bundle_trackers'].present? and Setting.plugin_redmine_emergya_adjustments['prepaid_bundle_custom_fields'].present? and Setting.plugin_redmine_emergya_adjustments['prepaid_bundle_income_expense_types'].present?
-        if self.root.present? and self.root_id != self.id
-          invoice_type_root = self.root.editable_custom_field_values.detect{|cfv| Setting.plugin_redmine_emergya_adjustments['prepaid_bundle_custom_fields'].include?(cfv.custom_field_id.to_s)}
-          if Setting.plugin_redmine_emergya_adjustments['prepaid_bundle_income_expense_types'].include? invoice_type_root.value
-            root_currency = self.root.custom_values.find_by_custom_field_id(IE::Integration.currency_field_id)
-            issue_currency = self.custom_values.find_by_custom_field_id(IE::Integration.currency_field_id).value
-            issue_form_currency = self.editable_custom_field_values.detect{|cfv| IE::Integration.currency_field_id == cfv.custom_field_id.to_s}
-            facturacion_root_ml = CustomValue.find_by_customized_id_and_custom_field_id(self.root.id, Setting.plugin_redmine_emergya_adjustments['bill_ml_invoice_custom_field'])
-            #Si se usa la misma divisa, continuará por el flujo antiguo
-            if issue_form_currency.value == root_currency.value and (root_currency.value == issue_currency or issue_currency.nil?)
-              facturacion_ml = self.editable_custom_field_values.detect{|cfv| cfv.custom_field_id.to_s == Setting.plugin_redmine_emergya_adjustments['bill_ml_invoice_custom_field']}
-              previous_facturacion_ml = facturacion_ml.value_was.present? ? facturacion_ml.value_was.to_f : 0.0
-              facturacion_root_ml.update_attribute('value', facturacion_root_ml.value.to_f - facturacion_ml.value.to_f + previous_facturacion_ml) if facturacion_ml.present? and facturacion_root_ml.present?
-            else
-              facturacion_tl = self.editable_custom_field_values.detect{|cfv| cfv.custom_field_id.to_s == Setting.plugin_redmine_emergya_adjustments['bill_invoice_custom_field']}
-              facturacion_root_tl = CustomValue.find_by_customized_id_and_custom_field_id(self.root.id, Setting.plugin_redmine_emergya_adjustments['bill_invoice_custom_field'])
-              previous_facturacion_tl = facturacion_tl.value_was.present? ? facturacion_tl.value_was.to_f : 0.0
-              new_amount = facturacion_root_tl.value.to_f - facturacion_tl.value.to_f + previous_facturacion_tl if facturacion_tl.present? and facturacion_root_tl.present?
-              facturacion_root_ml.update_attribute('value', revert_conversion(new_amount, root_currency)) unless new_amount.blank? and root_currency.blank? and facturacion_root_tl.value.to_f == new_amount
-            end
-          end
+      if self.root.present? and self.root_id != self.id and self.root.is_prepaid_bundle?
+        root_currency = self.root.custom_values.find_by_custom_field_id(IE::Integration.currency_field_id)
+        issue_currency = self.custom_values.find_by_custom_field_id(IE::Integration.currency_field_id).value
+        issue_form_currency = self.editable_custom_field_values.detect{|cfv| IE::Integration.currency_field_id == cfv.custom_field_id.to_s}
+        facturacion_root_ml = CustomValue.find_by_customized_id_and_custom_field_id(self.root.id, Setting.plugin_redmine_emergya_adjustments['bill_ml_invoice_custom_field'])
+        #Si se usa la misma divisa, continuará por el flujo antiguo
+        if issue_form_currency.value == root_currency.value and (root_currency.value == issue_currency or issue_currency.nil?)
+          facturacion_ml = self.editable_custom_field_values.detect{|cfv| cfv.custom_field_id.to_s == Setting.plugin_redmine_emergya_adjustments['bill_ml_invoice_custom_field']}
+          previous_facturacion_ml = facturacion_ml.value_was.present? ? facturacion_ml.value_was.to_f : 0.0
+          facturacion_root_ml.update_attribute('value', facturacion_root_ml.value.to_f - facturacion_ml.value.to_f + previous_facturacion_ml) if facturacion_ml.present? and facturacion_root_ml.present?
+        else
+          facturacion_tl = self.editable_custom_field_values.detect{|cfv| cfv.custom_field_id.to_s == Setting.plugin_redmine_emergya_adjustments['bill_invoice_custom_field']}
+          facturacion_root_tl = CustomValue.find_by_customized_id_and_custom_field_id(self.root.id, Setting.plugin_redmine_emergya_adjustments['bill_invoice_custom_field'])
+          previous_facturacion_tl = facturacion_tl.value_was.present? ? facturacion_tl.value_was.to_f : 0.0
+          new_amount = facturacion_root_tl.value.to_f - facturacion_tl.value.to_f + previous_facturacion_tl if facturacion_tl.present? and facturacion_root_tl.present?
+          facturacion_root_ml.update_attribute('value', revert_conversion(new_amount, root_currency)) unless new_amount.blank? and root_currency.blank? and facturacion_root_tl.value.to_f == new_amount
         end
       end
     end
 
     def restore_prepaid_bundle
-      if Setting.plugin_redmine_emergya_adjustments['prepaid_bundle_trackers'].present? and Setting.plugin_redmine_emergya_adjustments['prepaid_bundle_custom_fields'].present? and Setting.plugin_redmine_emergya_adjustments['prepaid_bundle_income_expense_types'].present?
-        if self.root.present? and self.root_id != self.id
-          invoice_type_root = self.root.editable_custom_field_values.detect{|cfv| Setting.plugin_redmine_emergya_adjustments['prepaid_bundle_custom_fields'].include?(cfv.custom_field_id.to_s)}
-          if Setting.plugin_redmine_emergya_adjustments['prepaid_bundle_income_expense_types'].include? invoice_type_root.value
-              root_currency = self.root.custom_values.find_by_custom_field_id(IE::Integration.currency_field_id)
-              facturacion_root_ml = CustomValue.find_by_customized_id_and_custom_field_id(self.root.id, Setting.plugin_redmine_emergya_adjustments['bill_ml_invoice_custom_field'])
-            #Si se usa la misma divisa, continuará por el flujo antiguo
-            if self.custom_values.find_by_custom_field_id(IE::Integration.currency_field_id).value == root_currency.value
-              facturacion_ml = CustomValue.find_by_customized_id_and_custom_field_id(self.id, Setting.plugin_redmine_emergya_adjustments['bill_ml_invoice_custom_field'])
-              facturacion_root_ml.update_attribute('value', facturacion_root_ml.value.to_f + facturacion_ml.value.to_f) if facturacion_ml.present? and facturacion_root_ml.present?
-            else
-              facturacion_tl = CustomValue.find_by_customized_id_and_custom_field_id(self.id, Setting.plugin_redmine_emergya_adjustments['bill_invoice_custom_field'])
-              facturacion_root_tl = CustomValue.find_by_customized_id_and_custom_field_id(self.root.id, Setting.plugin_redmine_emergya_adjustments['bill_invoice_custom_field'])
-              new_amount = facturacion_root_tl.value.to_f + facturacion_tl.value.to_f if facturacion_tl.present? and facturacion_root_tl.present?
-              facturacion_root_ml.update_attribute('value', revert_conversion(new_amount, root_currency)) unless new_amount.blank? and root_currency.blank? and facturacion_root_tl.value.to_f == new_amount
-            end
-          end
+      if self.root.present? and self.root_id != self.id and self.root.is_prepaid_bundle?
+        root_currency = self.root.custom_values.find_by_custom_field_id(IE::Integration.currency_field_id)
+        facturacion_root_ml = CustomValue.find_by_customized_id_and_custom_field_id(self.root.id, Setting.plugin_redmine_emergya_adjustments['bill_ml_invoice_custom_field'])
+        #Si se usa la misma divisa, continuará por el flujo antiguo
+        if self.custom_values.find_by_custom_field_id(IE::Integration.currency_field_id).value == root_currency.value
+          facturacion_ml = CustomValue.find_by_customized_id_and_custom_field_id(self.id, Setting.plugin_redmine_emergya_adjustments['bill_ml_invoice_custom_field'])
+          facturacion_root_ml.update_attribute('value', facturacion_root_ml.value.to_f + facturacion_ml.value.to_f) if facturacion_ml.present? and facturacion_root_ml.present?
+        else
+          facturacion_tl = CustomValue.find_by_customized_id_and_custom_field_id(self.id, Setting.plugin_redmine_emergya_adjustments['bill_invoice_custom_field'])
+          facturacion_root_tl = CustomValue.find_by_customized_id_and_custom_field_id(self.root.id, Setting.plugin_redmine_emergya_adjustments['bill_invoice_custom_field'])
+          new_amount = facturacion_root_tl.value.to_f + facturacion_tl.value.to_f if facturacion_tl.present? and facturacion_root_tl.present?
+          facturacion_root_ml.update_attribute('value', revert_conversion(new_amount, root_currency)) unless new_amount.blank? and root_currency.blank? and facturacion_root_tl.value.to_f == new_amount
         end
       end
     end

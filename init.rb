@@ -13,6 +13,7 @@
 #require 'issues_dates_required_patch'
 require 'issue_patch'
 require 'issues_controller_patch'
+require 'issues_helper_patch'
 require 'settings_controller_patch'
 require 'queries_helper_patch'
 require 'projects_controller_patch'
