@@ -104,6 +104,19 @@ module IssuePatch
         available_custom_fields_without_generic_tracker
       end
     end
+
+    def is_bill_bundle?
+      if Setting.plugin_redmine_emergya_adjustments['bill_invoice_custom_field'].present?
+        bill_invoice_custom_field = CustomField.find(Setting.plugin_redmine_emergya_adjustments['bill_invoice_custom_field'].to_i)
+        Setting.plugin_redmine_emergya_adjustments['show_bill_bundle_accumulated'].present? and bill_invoice_custom_field.tracker_ids.include? self.tracker_id and self.custom_values.find_by_custom_field_id(bill_invoice_custom_field.id).value.present? and self.descendants.present? and self.descendants.any? {|i| bill_invoice_custom_field.tracker_ids.include? i.tracker_id and (child_bill_invoice_custom_value = i.custom_values.find_by_custom_field_id(bill_invoice_custom_field.id)).present? and child_bill_invoice_custom_value.value.present?}
+      else
+        false
+      end
+    end
+
+    def get_accumulated_amount
+      self.descendants.map{|i| i.is_bill_bundle? ? i.get_accumulated_amount : (child_bill_invoice_custom_value = i.custom_values.find_by_custom_field_id(Setting.plugin_redmine_emergya_adjustments['bill_invoice_custom_field'])).present? ? child_bill_invoice_custom_value.value.to_f.round(2) : 0}.sum + self.custom_values.find_by_custom_field_id(Setting.plugin_redmine_emergya_adjustments['bill_invoice_custom_field']).value.to_f.round(2)
+    end
   end
 
 end

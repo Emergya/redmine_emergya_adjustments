@@ -1,0 +1,6 @@
+<% if @issue.is_bill_bundle? %>
+<script type="text/javascript">
+	var htmlBolsa = '<div class="accumulated attribute">\n\t<div class="label">\n\t\t<span>Importe acumulado</span>:\n\t</div>\n\t<div class="value"><%= @issue.get_accumulated_amount %>€</div>\n</div>';
+	$('div#content div.attributes div.splitcontent:nth-child(2) div.splitcontentleft:nth-child(2)').append(htmlBolsa);
+</script>
+<% end %>

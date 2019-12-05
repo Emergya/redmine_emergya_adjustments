@@ -226,6 +226,11 @@ Tipos de peticiones afectadas:
   </p>
 
   <p>
+    <label>Mostrar importe acumulado en bolsa</label>
+    <%= check_box_tag 'settings[show_bill_bundle_accumulated]', true, @settings['show_bill_bundle_accumulated'].present? %>
+  </p>
+
+  <p>
     <label>Coste anual BPO</label>
     <%
       if Setting.plugin_redmine_emergya_adjustments['bpo_tracker'].present? 

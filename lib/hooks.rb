@@ -7,6 +7,8 @@ module Emergya_adjustments
     end
     render_on :view_issues_form_details_bottom,
               :partial => 'issues/tracking_custom_fields'
+    render_on :view_issues_show_details_bottom,
+              :partial => 'hooks/emergya/view_issues_show_details_bottom'
   end
 end
 

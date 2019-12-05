@@ -19,6 +19,7 @@ require 'projects_controller_patch'
 require 'projects_helper_patch'
 require 'time_entry_patch'
 require 'hooks'
+require 'issues_helper_patch'
 
 
 Rails.configuration.to_prepare do
