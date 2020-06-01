@@ -265,6 +265,24 @@ Tipos de peticiones afectadas:
       });
     </script>
   </p>
+
+  <p>
+    <label>Porcentaje de dedicación BPO</label>
+    <%
+      if Setting.plugin_redmine_emergya_adjustments['bpo_tracker'].present? 
+        options = ('<option></option>'+options_from_collection_for_select(Tracker.find(Setting.plugin_redmine_emergya_adjustments['bpo_tracker']).custom_fields, :id, :name, @settings['bpo_commitment_percentage_custom_field'].to_i)).html_safe
+      else
+        options = ('<option></option>').html_safe
+      end
+    %>
+    <%= select_tag 'settings[bpo_commitment_percentage_custom_field]', options %>
+    <!-- observe_field replacement for Redmine 2.3-->
+    <script>
+      $('#settings_bpo_tracker').change(function(){
+      $('#settings_bpo_total_cost_custom_field').load('/settings/show_tracker_custom_fields', {tracker: $('#settings_bpo_tracker').val()});
+      });
+    </script>
+  </p>
   
 </fieldset>
 </div>

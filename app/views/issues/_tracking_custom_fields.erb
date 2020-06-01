@@ -55,12 +55,14 @@
     fecha_inicio = $("#issue_start_date");
     fecha_fin = $("#issue_due_date");
     coste_total = $("#issue_custom_field_values_"+"<%=Setting.plugin_redmine_emergya_adjustments['bpo_total_cost_custom_field']%>");
+    porcentaje_dedicacion = $("#issue_custom_field_values_"+"<%=Setting.plugin_redmine_emergya_adjustments['bpo_commitment_percentage_custom_field']%>")
 
     // Auto calcular el campo Coste total de BPO apartir de Coste anual de BPO y de la fecha de inicio y de fin
     coste_anual.addClass('launcher').attr('data-attr_name','anual').attr('data-attr_slave','coste_total');
     fecha_inicio.addClass('launcher').attr('data-attr_name','inicio').attr('data-attr_slave','coste_total');
     fecha_fin.addClass('launcher').attr('data-attr_name','fin').attr('data-attr_slave','coste_total');
     coste_total.addClass('autofilled_field').attr('data-attr_name','coste_total').prop('disabled', true);
+    porcentaje_dedicacion.addClass('launcher').attr('data-attr_name','dedicacion').attr('data-attr_slave','coste_total')
 
     url = "/get_bpo_total";
 

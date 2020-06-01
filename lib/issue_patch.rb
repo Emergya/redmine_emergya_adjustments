@@ -78,10 +78,11 @@ module IssuePatch
 
       if coste_anual.present?
         coste_total = CustomValue.find_or_create_by(customized_id: self.id, customized_type: 'Issue', custom_field_id: Setting.plugin_redmine_emergya_adjustments['bpo_total_cost_custom_field'])
+        porcentaje_dedicacion = CustomValue.find_or_create_by(customized_id: self.id, customized_type: 'Issue', custom_field_id: Setting.plugin_redmine_emergya_adjustments['bpo_commitment_percentage_custom_field']).value.to_f
         anual = coste_anual.value.to_f
         dias = (self.due_date.to_date - self.start_date.to_date).to_i + 1
         
-        coste_total.update_attribute('value', (anual*dias)/365)
+        coste_total.update_attribute('value', (anual*dias)/365 * (porcentaje_dedicacion/100))
       end
     end
 

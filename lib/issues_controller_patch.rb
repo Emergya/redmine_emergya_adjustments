@@ -41,10 +41,12 @@ module IssuesControllerPatch
       anual = params[:anual]
       inicio = params[:inicio]
       fin = params[:fin]
+      dedicacion = params[:dedicacion]
 
-      if anual.present? and inicio.present? and fin.present?
+      if anual.present? and inicio.present? and fin.present? and dedicacion.present?
         dias = (fin.to_date - inicio.to_date).to_i + 1
-        total = (anual.to_f * dias)/365
+        porcentaje_dedicacion = dedicacion.to_f/100
+        total = (anual.to_f * dias)/365 * porcentaje_dedicacion
         render :text => total
       else
         render :text => '0' #:nothing => true
