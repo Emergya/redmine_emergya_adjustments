@@ -1,11 +1,15 @@
 en:
   permission_avoid_time_entries: Avoid time entries
   permission_avoid_setting_projects: Allow project settings
+  permission_ignore_project_time_log_start_date: Ignore project time log start date
   emergya:
     label_avoid_time_entries: Avoid time entries
     label_avoid_setting_projects: Avoid project settings
+    label_time_log_start_date: Time log start date
     error_disabled_project_time_entries: Disabled time entries
     error_issue_is_closed: It's not possible to log time entries on closed issues
+    error_earlier_than_project_time_log_start_date: cannot be earlier than project time log start date
+    error_issue_has_time_entries_spent_earlier_than_project_time_log_start_date: Issue has time entries spent earlier than project time log start date
   activerecord:
     errors:
       models:

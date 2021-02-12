@@ -4,6 +4,10 @@
 	<%= check_box_tag :avoid_time_entries, 1, @project.avoid_time_entries %>
 	<%= l(:"emergya.label_avoid_time_entries") %>
 </p>
+<p>
+	<label><%= l(:"emergya.label_time_log_start_date") %></label>
+	<%= text_field_tag :time_log_start_date, @project.time_log_start_date, :size => 10 %><%= calendar_for('time_log_start_date') %>
+</p>
 </div>
 
 <%= submit_tag l(:button_save) %>

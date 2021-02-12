@@ -36,6 +36,7 @@ Redmine::Plugin.register :redmine_emergya_adjustments do
 
   permission :avoid_time_entries, { :projects => [:settings] }
   permission :allow_project_settings, { :projects => [:settings] }
+  permission :ignore_project_time_log_start_date, { :timelog => [:new, :edit], :issues => [:edit, :bulk_edit] }, :require => :member
 
   requires_redmine_plugin :redmine_base_deface, :version_or_higher => '0.0.1'
   settings :default => { :trackers => []}, :partial => 'settings/settings'

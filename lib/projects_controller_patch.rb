@@ -12,6 +12,7 @@ module ProjectsControllerPatch
   module InstanceMethods
     def setting_time_entries
       @project.avoid_time_entries = params[:avoid_time_entries]
+      @project.time_log_start_date = params[:time_log_start_date]
 
       if @project.save
         flash[:notice] = l(:notice_successful_update)

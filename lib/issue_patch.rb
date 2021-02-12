@@ -19,7 +19,7 @@ module IssuePatch
 
     base.class_eval do
         
-      validate  :validate_required_dates
+      validate  :validate_required_dates, :validate_time_entries
       after_save :update_cobro, :if => Proc.new { |issue| 
         issue.tracker_id == Setting.plugin_redmine_emergya_adjustments['bill_tracker'].to_i}
       after_save :update_bpo_total, :if => Proc.new { |issue| 
@@ -117,6 +117,15 @@ module IssuePatch
 
     def get_accumulated_amount
       self.descendants.map{|i| i.is_bill_bundle? ? i.get_accumulated_amount : (child_bill_invoice_custom_value = i.custom_values.find_by_custom_field_id(Setting.plugin_redmine_emergya_adjustments['bill_invoice_custom_field'])).present? ? child_bill_invoice_custom_value.value.to_f.round(2) : 0}.sum + self.custom_values.find_by_custom_field_id(Setting.plugin_redmine_emergya_adjustments['bill_invoice_custom_field']).value.to_f.round(2)
+    end
+
+    def validate_time_entries
+      if self.project.time_log_start_date.present?
+        time_entries = self.time_entries
+        if time_entries.any? { |te|  te.spent_on < self.project.time_log_start_date and not te.user.allowed_to?(:ignore_project_time_log_start_date, self.project) }
+          errors.add(:base, l(:"emergya.error_issue_has_time_entries_spent_earlier_than_project_time_log_start_date"))
+        end
+      end
     end
   end
 

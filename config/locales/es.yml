@@ -2,11 +2,15 @@
 es:
   permission_avoid_time_entries: Prohibir carga de horas
   permission_avoid_setting_projects: Permitir configuración de proyecto
+  permission_ignore_project_time_log_start_date: Ignorar fecha inicial de carga de horas del proyecto
   emergya:
     label_avoid_time_entries: Prohibir carga de horas
     label_avoid_setting_projects: Prohibir configuración de proyecto
+    label_time_log_start_date: Fecha de inicio de carga de horas
     error_disabled_project_time_entries: Imputaciones deshabilitadas
     error_issue_is_closed: No se pueden realizar imputaciones en peticiones cerradas
+    error_earlier_than_project_time_log_start_date: no puede ser anterior a la fecha de inicio de carga de horas del proyecto
+    error_issue_has_time_entries_spent_earlier_than_project_time_log_start_date: El ticket tiene imputaciones de horas con fecha anterior a la fecha de inicio de carga de horas del proyecto
   activerecord:
     errors:
       models:
