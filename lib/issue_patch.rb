@@ -82,7 +82,7 @@ module IssuePatch
         anual = coste_anual.value.to_f
         dias = (self.due_date.to_date - self.start_date.to_date).to_i + 1
         
-        coste_total.update_attribute('value', (anual*dias)/365 * (porcentaje_dedicacion/100))
+        coste_total.update_attribute('value', ((anual*dias)/365 * (porcentaje_dedicacion/100)).round(2))
       end
     end
 
