@@ -116,7 +116,7 @@ module IssuePatch
     end
 
     def get_accumulated_amount
-      self.descendants.map{|i| i.is_bill_bundle? ? i.get_accumulated_amount : (child_bill_invoice_custom_value = i.custom_values.find_by_custom_field_id(Setting.plugin_redmine_emergya_adjustments['bill_invoice_custom_field'])).present? ? child_bill_invoice_custom_value.value.to_f.round(2) : 0}.sum + self.custom_values.find_by_custom_field_id(Setting.plugin_redmine_emergya_adjustments['bill_invoice_custom_field']).value.to_f.round(2)
+      (self.descendants.map{|i| i.is_bill_bundle? ? i.get_accumulated_amount : (child_bill_invoice_custom_value = i.custom_values.find_by_custom_field_id(Setting.plugin_redmine_emergya_adjustments['bill_invoice_custom_field'])).present? ? (child_bill_invoice_custom_value.value.to_f).round(2) : 0}.sum + (self.custom_values.find_by_custom_field_id(Setting.plugin_redmine_emergya_adjustments['bill_invoice_custom_field']).value.to_f).round(2)).round(2)
     end
 
     def validate_time_entries
